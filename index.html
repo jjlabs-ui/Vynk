@@ -1166,19 +1166,12 @@ card.addEventListener('mouseleave',function(){
       window._spotifyTrackId = sp.track_id || '';
       spotifyCard.style.display = 'flex';
 
-      // Pausa a música do site
       spotifyActive = true;
       lanyardReady = true;
 
-      // Atualiza o widget de música com a do Spotify
-      var mpTitleEl = document.getElementById('mpTitle');
-      var mpArtistEl = document.getElementById('mpArtist');
-      var mpCoverEl = document.getElementById('mpCover');
-      if (mpTitleEl) mpTitleEl.textContent = sp.song || '';
-      if (mpArtistEl) mpArtistEl.textContent = sp.artist || '';
-      if (mpCoverEl) mpCoverEl.src = sp.album_art_url || '';
+      // Spotify info shown only in Discord activity card, not in music player
 
-      // Progress bar
+      // Progress bar for spotify card only
       if (sp.timestamps) {
         var now = Date.now();
         var start = sp.timestamps.start;
@@ -1186,14 +1179,6 @@ card.addEventListener('mouseleave',function(){
         var pct = Math.min(100, ((now - start) / (end - start)) * 100);
         var bar = document.getElementById('spotifyBar');
         if (bar) bar.style.width = pct + '%';
-        var mpFillEl = document.getElementById('mpFill');
-        var mpCurEl = document.getElementById('mpCur');
-        var mpDurEl = document.getElementById('mpDur');
-        if (mpFillEl) mpFillEl.style.width = pct + '%';
-        var elapsed = Math.floor((now - start) / 1000);
-        var total = Math.floor((end - start) / 1000);
-        if (mpCurEl) mpCurEl.textContent = fmt(elapsed);
-        if (mpDurEl) mpDurEl.textContent = fmt(total);
       }
 
       onLanyardFirstResponse(data);
