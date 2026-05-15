@@ -47,52 +47,55 @@ function DiscordIcon() {
 }
 
 /* ─── Discord Status Indicator ───────────────────────────────────────────── */
-function DiscordPresence({ presence = 'online', size = 11 }) {
-  const border = 2
-  const total = size + border * 2
-  
+function DiscordPresence({ presence = 'online', size = 15 }) {
+  // Ícones SVG idênticos aos do Discord
   if (presence === 'online') {
     return (
-      <span className="presence-dot" style={{ width: total, height: total }}>
-        <svg width={total} height={total} viewBox={`0 0 ${total} ${total}`}>
-          <circle cx={total/2} cy={total/2} r={total/2} fill="#080808" />
-          <circle cx={total/2} cy={total/2} r={size/2} fill="#23a55a" />
+      <span className="presence-dot">
+        <svg width={size} height={size} viewBox="0 0 15 15">
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#23a55a" />
         </svg>
       </span>
     )
   }
-  
+
   if (presence === 'idle') {
     return (
-      <span className="presence-dot" style={{ width: total, height: total }}>
-        <svg width={total} height={total} viewBox={`0 0 ${total} ${total}`}>
-          <circle cx={total/2} cy={total/2} r={total/2} fill="#080808" />
-          <circle cx={total/2} cy={total/2} r={size/2} fill="#f0b232" />
-          <circle cx={total/2 - size*0.18} cy={total/2 - size*0.18} r={size*0.3} fill="#080808" />
+      <span className="presence-dot">
+        <svg width={size} height={size} viewBox="0 0 15 15">
+          <mask id="idle-mask">
+            <rect width="15" height="15" fill="white" />
+            <circle cx="5" cy="5" r="5.5" fill="black" />
+          </mask>
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#f0b232" mask="url(#idle-mask)" />
         </svg>
       </span>
     )
   }
-  
+
   if (presence === 'dnd') {
     return (
-      <span className="presence-dot" style={{ width: total, height: total }}>
-        <svg width={total} height={total} viewBox={`0 0 ${total} ${total}`}>
-          <circle cx={total/2} cy={total/2} r={total/2} fill="#080808" />
-          <circle cx={total/2} cy={total/2} r={size/2} fill="#f23f43" />
-          <rect x={total/2 - size*0.3} y={total/2 - size*0.1} width={size*0.6} height={size*0.2} rx={size*0.1} fill="#080808" />
+      <span className="presence-dot">
+        <svg width={size} height={size} viewBox="0 0 15 15">
+          <mask id="dnd-mask">
+            <rect width="15" height="15" fill="white" />
+            <rect x="3.5" y="5.75" width="8" height="3.5" rx="1.75" fill="black" />
+          </mask>
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#f23f43" mask="url(#dnd-mask)" />
         </svg>
       </span>
     )
   }
-  
+
   // offline / invisible
   return (
-    <span className="presence-dot" style={{ width: total, height: total }}>
-      <svg width={total} height={total} viewBox={`0 0 ${total} ${total}`}>
-        <circle cx={total/2} cy={total/2} r={total/2} fill="#080808" />
-        <circle cx={total/2} cy={total/2} r={size/2} fill="#80848e" />
-        <circle cx={total/2} cy={total/2} r={size*0.25} fill="#080808" />
+    <span className="presence-dot">
+      <svg width={size} height={size} viewBox="0 0 15 15">
+        <mask id="offline-mask">
+          <rect width="15" height="15" fill="white" />
+          <circle cx="7.5" cy="7.5" r="3.75" fill="black" />
+        </mask>
+        <circle cx="7.5" cy="7.5" r="7.5" fill="#80848e" mask="url(#offline-mask)" />
       </svg>
     </span>
   )
@@ -455,7 +458,12 @@ const CSS = `
   .pav-wrap { position:relative; width:42px; height:42px; flex-shrink:0; }
   .pav { width:42px; height:42px; border-radius:50%; object-fit:cover; }
   .dot { position:absolute; bottom:0; right:0; width:11px; height:11px; background:#23a55a; border-radius:50%; border:2px solid #080808; }
-  .presence-dot { position:absolute; bottom:-1px; right:-1px; display:block; line-height:0; }
+  .presence-dot {
+    position:absolute; bottom:-2px; right:-2px;
+    display:block; line-height:0;
+    background:#080808; border-radius:50%;
+    padding:3px;
+  }
   .ptxt { display:flex; flex-direction:column; gap:3px; }
   .pname { font-size:13px; font-weight:500; color:rgba(255,255,255,0.82); }
   .pstatus { font-size:11px; color:rgba(255,255,255,0.3); }
