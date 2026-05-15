@@ -48,57 +48,53 @@ function DiscordIcon() {
 
 /* ─── Discord Status Indicator ───────────────────────────────────────────── */
 function DiscordPresence({ presence = 'online', size = 15 }) {
-  // Ícones SVG idênticos aos do Discord
   if (presence === 'online') {
-    // Círculo verde sólido
     return (
       <span className="presence-dot">
-        <svg width={size} height={size} viewBox="0 0 15 15">
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#3ba55c" />
+        <svg width={size} height={size} viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="8" fill="#3ba55c" />
         </svg>
       </span>
     )
   }
 
   if (presence === 'idle') {
-    // Lua/crescente amarela — círculo com recorte grande no canto superior esquerdo
     return (
       <span className="presence-dot">
-        <svg width={size} height={size} viewBox="0 0 15 15">
+        <svg width={size} height={size} viewBox="0 0 16 16">
           <mask id="idle-mask">
-            <rect width="15" height="15" fill="white" />
-            <circle cx="5" cy="4.5" r="6" fill="black" />
+            <rect width="16" height="16" fill="white" />
+            <circle cx="4.5" cy="3.5" r="6.5" fill="black" />
           </mask>
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#f9a825" mask="url(#idle-mask)" />
+          <circle cx="8" cy="8" r="8" fill="#f9a825" mask="url(#idle-mask)" />
         </svg>
       </span>
     )
   }
 
   if (presence === 'dnd') {
-    // Círculo vermelho com traço/barra horizontal no meio
     return (
       <span className="presence-dot">
-        <svg width={size} height={size} viewBox="0 0 15 15">
+        <svg width={size} height={size} viewBox="0 0 16 16">
           <mask id="dnd-mask">
-            <rect width="15" height="15" fill="white" />
-            <rect x="3" y="5.5" width="9" height="4" rx="2" fill="black" />
+            <rect width="16" height="16" fill="white" />
+            <rect x="3.2" y="5.5" width="9.6" height="5" rx="2.5" fill="black" />
           </mask>
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#ed4245" mask="url(#dnd-mask)" />
+          <circle cx="8" cy="8" r="8" fill="#ed4245" mask="url(#dnd-mask)" />
         </svg>
       </span>
     )
   }
 
-  // offline / invisible — anel cinza (círculo com buraco grande no centro)
+  // offline / invisible
   return (
     <span className="presence-dot">
-      <svg width={size} height={size} viewBox="0 0 15 15">
+      <svg width={size} height={size} viewBox="0 0 16 16">
         <mask id="offline-mask">
-          <rect width="15" height="15" fill="white" />
-          <circle cx="7.5" cy="7.5" r="4" fill="black" />
+          <rect width="16" height="16" fill="white" />
+          <circle cx="8" cy="8" r="4.5" fill="black" />
         </mask>
-        <circle cx="7.5" cy="7.5" r="7.5" fill="#747f8d" mask="url(#offline-mask)" />
+        <circle cx="8" cy="8" r="8" fill="#747f8d" mask="url(#offline-mask)" />
       </svg>
     </span>
   )
