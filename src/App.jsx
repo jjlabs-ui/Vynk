@@ -50,52 +50,55 @@ function DiscordIcon() {
 function DiscordPresence({ presence = 'online', size = 15 }) {
   // Ícones SVG idênticos aos do Discord
   if (presence === 'online') {
+    // Círculo verde sólido
     return (
       <span className="presence-dot">
         <svg width={size} height={size} viewBox="0 0 15 15">
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#23a55a" />
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#3ba55c" />
         </svg>
       </span>
     )
   }
 
   if (presence === 'idle') {
+    // Lua/crescente amarela — círculo com recorte grande no canto superior esquerdo
     return (
       <span className="presence-dot">
         <svg width={size} height={size} viewBox="0 0 15 15">
           <mask id="idle-mask">
             <rect width="15" height="15" fill="white" />
-            <circle cx="5" cy="5" r="5.5" fill="black" />
+            <circle cx="5" cy="4.5" r="6" fill="black" />
           </mask>
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#f0b232" mask="url(#idle-mask)" />
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#f9a825" mask="url(#idle-mask)" />
         </svg>
       </span>
     )
   }
 
   if (presence === 'dnd') {
+    // Círculo vermelho com traço/barra horizontal no meio
     return (
       <span className="presence-dot">
         <svg width={size} height={size} viewBox="0 0 15 15">
           <mask id="dnd-mask">
             <rect width="15" height="15" fill="white" />
-            <rect x="3.5" y="5.75" width="8" height="3.5" rx="1.75" fill="black" />
+            <rect x="3" y="5.5" width="9" height="4" rx="2" fill="black" />
           </mask>
-          <circle cx="7.5" cy="7.5" r="7.5" fill="#f23f43" mask="url(#dnd-mask)" />
+          <circle cx="7.5" cy="7.5" r="7.5" fill="#ed4245" mask="url(#dnd-mask)" />
         </svg>
       </span>
     )
   }
 
-  // offline / invisible
+  // offline / invisible — anel cinza (círculo com buraco grande no centro)
   return (
     <span className="presence-dot">
       <svg width={size} height={size} viewBox="0 0 15 15">
         <mask id="offline-mask">
           <rect width="15" height="15" fill="white" />
-          <circle cx="7.5" cy="7.5" r="3.75" fill="black" />
+          <circle cx="7.5" cy="7.5" r="4" fill="black" />
         </mask>
-        <circle cx="7.5" cy="7.5" r="7.5" fill="#80848e" mask="url(#offline-mask)" />
+        <circle cx="7.5" cy="7.5" r="7.5" fill="#747f8d" mask="url(#offline-mask)" />
       </svg>
     </span>
   )
