@@ -30,11 +30,9 @@ const CONFIG = {
   music: {
     show: true,
     tracks: [
-      { cover: 'https://i.scdn.co/image/ab67616d0000b273e8b066f70c206551210d902b', title: 'California Love',     artist: '2Pac', duration: 284, src: '' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b2736a2ce15daec763f904a2e135', title: "Hit 'Em Up",          artist: '2Pac', duration: 312, src: '' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b27329e0e2b680a4b8e4e9e843f1', title: 'Ambitionz Az A Ridah',artist: '2Pac', duration: 279, src: '' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b273deae7df0b47e67cf9e0cf81b', title: 'Changes',             artist: '2Pac', duration: 268, src: '' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b273af7bff1db5e9e87e5b1e8e06', title: 'Dear Mama',           artist: '2Pac', duration: 290, src: '' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105c7', title: 'Звезда',              artist: 'JONY', duration: 197, src: '/"Звезда" — JONY.mp3' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b273a1c37f3fd969287c03482a3e', title: 'Камин (Slowed Reverb)', artist: 'Eibell', duration: 245, src: '/"Камин - Kamin Slowed Reverb" — Eibell.mp3' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b2734b7aea8dab816b498e68d0b0', title: 'Это ли счастье',       artist: 'Rauf & Faik', duration: 228, src: '/"это ли счастье" — Rauf & Faik.mp3' },
     ],
   },
 }
