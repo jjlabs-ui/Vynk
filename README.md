@@ -1,36 +1,28 @@
-# jjxvnz — Personal Biolink
+# Biolink — Personal Site
 
-🔗 **[Ver site ao vivo](https://y-orpin-mu-12.vercel.app)**
+🔗 [jjxvnz.bio](https://jjxvnz.bio)
 
-Site pessoal / biolink com integração Discord em tempo real.
+Site pessoal com integração Discord em tempo real, player de música com efeitos de áudio e design premium.
 
-## Features
+## Funcionalidades
 
-- 🎨 Design dark premium com glassmorphism e tilt 3D
-- 🎵 Player de música com reverb/eco e equalizer em tempo real (Web Audio API)
-- 🔗 Integração Discord via Lanyard (WebSocket) — avatar, status, atividades e Spotify em tempo real
-- 💎 Cursor customizado com trail de partículas
-- 📊 Contador de visitas
-- 📱 Responsivo (mobile + desktop)
-- 🎬 Vídeo de fundo em preto e branco
-- ⚡ Deploy automático via Vercel
+- Design dark com glassmorphism e efeito tilt 3D
+- Player de música com reverb/eco e equalizer (Web Audio API)
+- Integração Discord via Lanyard (WebSocket) — avatar, status, atividades e Spotify em tempo real
+- Cursor customizado com trail de partículas
+- Contador de visitas
+- Responsivo (mobile + desktop)
+- Vídeo de fundo em preto e branco
+- Deploy automático via Vercel
 
-## Stack
+## Tecnologias
 
-- HTML/CSS/JS puro (vanilla)
-- Vite (build tool)
-- Vercel (hosting)
+- HTML / CSS / JavaScript (vanilla)
+- Vite
+- Vercel
 - Lanyard API (Discord presence)
-- Web Audio API (reverb + analyser)
+- Web Audio API
 
 ## Licença
 
-**© 2026 jjxvnz — Todos os direitos reservados.**
-
-Este projeto é proprietário. Nenhuma parte do código, design ou assets pode ser copiada, modificada, distribuída ou utilizada sem autorização expressa por escrito do autor.
-
-Uso não autorizado está sujeito a medidas legais.
-
----
-
-*Quer um site como esse? Chama no Discord.*
+Consulte o arquivo [LICENSE](LICENSE).
