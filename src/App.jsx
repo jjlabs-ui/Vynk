@@ -30,9 +30,9 @@ const CONFIG = {
   music: {
     show: true,
     tracks: [
-      { cover: 'https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105c7', title: 'Звезда',              artist: 'JONY', duration: 197, src: '/"Звезда" — JONY.mp3' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b273a1c37f3fd969287c03482a3e', title: 'Камин (Slowed Reverb)', artist: 'Eibell', duration: 245, src: '/"Камин - Kamin Slowed Reverb" — Eibell.mp3' },
-      { cover: 'https://i.scdn.co/image/ab67616d0000b2734b7aea8dab816b498e68d0b0', title: 'Это ли счастье',       artist: 'Rauf & Faik', duration: 228, src: '/"это ли счастье" — Rauf & Faik.mp3' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105c7', title: 'Звезда',              artist: 'JONY', duration: 197, src: '/zvezda-jony.mp3' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b273a1c37f3fd969287c03482a3e', title: 'Камин (Slowed Reverb)', artist: 'Eibell', duration: 245, src: '/kamin-eibell.mp3' },
+      { cover: 'https://i.scdn.co/image/ab67616d0000b2734b7aea8dab816b498e68d0b0', title: 'Это ли счастье',       artist: 'Rauf & Faik', duration: 228, src: '/schastye-rauf-faik.mp3' },
     ],
   },
 }
