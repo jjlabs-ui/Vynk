@@ -643,7 +643,22 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     cards.sort(function(a,b){ return a.priority - b.priority; });
 
     if (cards.length === 0) {
-      if (wrap) wrap.style.display = 'none';
+      // Animação de saída antes de esconder tudo
+      var oldCards = container.querySelectorAll('.act-card');
+      if (oldCards.length > 0) {
+        oldCards.forEach(function(c) {
+          c.style.transition = 'opacity .3s ease, transform .3s ease';
+          c.style.opacity = '0';
+          c.style.transform = 'translateY(-8px) scale(.95)';
+        });
+        setTimeout(function() {
+          if (wrap) wrap.style.display = 'none';
+          container.innerHTML = '';
+          lastCardsKey = '';
+        }, 350);
+      } else {
+        if (wrap) wrap.style.display = 'none';
+      }
       return;
     }
     if (wrap) wrap.style.display = 'block';
@@ -655,16 +670,15 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     lastCardsKey = newKey;
 
     if (needsRebuild) {
-      // Animação de saída nos cards antigos
+      // Animação de saída nos cards antigos antes de reconstruir
       var oldCards = container.querySelectorAll('.act-card');
       if (oldCards.length > 0 && oldKey !== '') {
         oldCards.forEach(function(c) {
-          c.style.transition = 'opacity .3s, transform .3s';
+          c.style.transition = 'opacity .3s ease, transform .3s ease';
           c.style.opacity = '0';
           c.style.transform = 'translateY(-8px) scale(.95)';
         });
-        // Espera a animação terminar antes de reconstruir
-        setTimeout(function() { renderCards(container, cards, btn); }, 300);
+        setTimeout(function() { renderCards(container, cards, btn); }, 320);
       } else {
         renderCards(container, cards, btn);
       }
