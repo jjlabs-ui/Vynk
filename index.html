@@ -472,16 +472,14 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       transform-origin:top center;
     }
     .act-card.act-hidden{
-      max-height:0;opacity:0;padding:0 14px;margin:0;gap:0;
-      border-color:transparent !important;overflow:hidden;
-      transform:translateY(-10px) scale(.96);
-      transition:all .35s cubic-bezier(.4,0,.2,1);
+      max-height:0 !important;opacity:0 !important;padding-top:0 !important;padding-bottom:0 !important;margin:0 !important;
+      border-color:transparent !important;overflow:hidden !important;
+      transform:translateY(-6px) !important;
       pointer-events:none;
     }
-    .act-card.act-visible{
-      max-height:120px;opacity:1;
-      transform:translateY(0) scale(1);
-      transition:all .35s cubic-bezier(.4,0,.2,1);
+    .act-card.act-secondary-card{
+      transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease,margin .3s ease,transform .3s ease,border-color .3s ease;
+      max-height:150px;
     }
     #actExpandBtn:hover{opacity:.7;}
     #actChevron.up{transform:rotate(180deg);}
@@ -514,22 +512,25 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     clearTimeout(actAutoTimer);
 
     if(actExpanded){
-      // Aberto: setinha pra cima
       chevron.classList.add('up');
       expandBtn.classList.remove('hint');
-      cards.forEach(function(c){c.classList.remove('act-hidden');c.classList.add('act-visible');});
-      // Auto-fecha depois de 15s
+      // Abre com delay escalonado
+      cards.forEach(function(c, i){
+        setTimeout(function(){ c.classList.remove('act-hidden'); }, i * 80);
+      });
       actAutoTimer = setTimeout(function(){
         if(actExpanded) toggleActivities();
       }, 15000);
     } else {
-      // Fechado: setinha pra baixo + animação de hint
       chevron.classList.remove('up');
-      cards.forEach(function(c){c.classList.remove('act-visible');c.classList.add('act-hidden');});
-      // Animação de bounce pra pessoa ver que tem mais
+      // Fecha com delay escalonado reverso
+      var total = cards.length;
+      cards.forEach(function(c, i){
+        setTimeout(function(){ c.classList.add('act-hidden'); }, (total - 1 - i) * 80);
+      });
       setTimeout(function(){
         expandBtn.classList.add('hint');
-      }, 400);
+      }, total * 80 + 200);
     }
   }
 
@@ -728,7 +729,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       for (var c = 0; c < cards.length; c++) {
         var card = cards[c];
         var div = document.createElement('div');
-        div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? ' act-visible' : ' act-hidden') : '');
+        div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? '' : ' act-hidden') : '');
         div.style.background = card.color.bg;
         div.style.border = '1px solid ' + card.color.border;
         div.style.opacity = '0';
