@@ -1144,8 +1144,18 @@ card.addEventListener('mouseleave',function(){
         }
       }
       if (customActivity && customActivity.state) {
-        var emoji = customActivity.emoji ? (customActivity.emoji.name + ' ') : '';
-        statusEl.textContent = emoji + customActivity.state;
+        var emojiHtml = '';
+        if (customActivity.emoji) {
+          if (customActivity.emoji.id) {
+            // Emoji customizado — puxar imagem do CDN do Discord
+            var emojiExt = customActivity.emoji.animated ? 'gif' : 'png';
+            emojiHtml = '<img src="https://cdn.discordapp.com/emojis/' + customActivity.emoji.id + '.' + emojiExt + '?size=20" width="16" height="16" style="vertical-align:-3px;margin-right:4px;border-radius:2px;" />';
+          } else {
+            // Emoji unicode padrão
+            emojiHtml = '<span style="margin-right:4px;">' + customActivity.emoji.name + '</span>';
+          }
+        }
+        statusEl.innerHTML = emojiHtml + customActivity.state;
         statusEl.style.display = 'block';
       } else {
         statusEl.style.display = 'none';
