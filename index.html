@@ -106,8 +106,8 @@ body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;
 .profile-avatar-wrap{position:relative;width:46px;height:46px;flex-shrink:0}
 .profile-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;transition:transform .3s,filter .8s}
 .profile-card:hover .profile-avatar{transform:scale(1.08)}
-.online-dot{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#f23f43;border-radius:50%;border:2px solid transparent;display:flex;align-items:center;justify-content:center;animation:dndPulse 2s ease-in-out infinite}
-.online-dot::after{content:"";display:block;width:5px;height:2px;border-radius:1px}
+.online-dot{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:#080808;display:flex;align-items:center;justify-content:center;padding:2px;line-height:0}
+.online-dot::after{display:none}
 @keyframes dndPulse{0%,100%{box-shadow:0 0 0 0 rgba(242,63,67,.4)}50%{box-shadow:0 0 0 5px rgba(242,63,67,0)}}
 .profile-text{display:flex;flex-direction:column;gap:3px}
 .profile-username{font-size:13px;font-weight:600;transition:color 1s}
@@ -572,7 +572,17 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     <div class="profile-card-left">
       <div class="profile-avatar-wrap">
         <img class="profile-avatar" id="discordAvatar" src="/perfildiscord.png" alt="profile"/>
-        <span class="online-dot" id="onlineDot"></span>
+        <span class="online-dot" id="onlineDot">
+          <svg width="14" height="14" viewBox="0 0 16 16" id="statusSvg">
+            <defs>
+              <mask id="status-mask-online"><rect width="16" height="16" fill="white"/></mask>
+              <mask id="status-mask-idle"><rect width="16" height="16" fill="white"/><circle cx="4.5" cy="3.5" r="6.5" fill="black"/></mask>
+              <mask id="status-mask-dnd"><rect width="16" height="16" fill="white"/><rect x="3.2" y="5.5" width="9.6" height="5" rx="2.5" fill="black"/></mask>
+              <mask id="status-mask-offline"><rect width="16" height="16" fill="white"/><circle cx="8" cy="8" r="4.5" fill="black"/></mask>
+            </defs>
+            <circle cx="8" cy="8" r="8" fill="#80848e" mask="url(#status-mask-offline)" id="statusCircle"/>
+          </svg>
+        </span>
       </div>
       <div class="profile-text">
         <span class="profile-username" id="discordName">jjxvnz</span>
@@ -1115,10 +1125,13 @@ card.addEventListener('mouseleave',function(){
 
     // Status dot
     var dot = document.getElementById('onlineDot');
-    if (dot) {
-      var colors = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
-      dot.style.background = colors[data.discord_status] || colors.offline;
-      dot.style.animation = data.discord_status === 'dnd' ? 'dndPulse 2s ease-in-out infinite' : 'none';
+    var statusCircle = document.getElementById('statusCircle');
+    if (statusCircle) {
+      var colors = { online: '#3ba55c', idle: '#f9a825', dnd: '#ed4245', offline: '#747f8d' };
+      var masks = { online: 'url(#status-mask-online)', idle: 'url(#status-mask-idle)', dnd: 'url(#status-mask-dnd)', offline: 'url(#status-mask-offline)' };
+      var st = data.discord_status || 'offline';
+      statusCircle.setAttribute('fill', colors[st] || colors.offline);
+      statusCircle.setAttribute('mask', masks[st] || masks.offline);
     }
 
     // Custom status
