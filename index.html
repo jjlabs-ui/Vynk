@@ -553,15 +553,12 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
               imgUrl = 'https://i.scdn.co/image/' + act.assets.large_image.replace('spotify:', '');
             } else if (act.application_id) {
               imgUrl = 'https://cdn.discordapp.com/app-assets/' + act.application_id + '/' + act.assets.large_image + '.png?size=128';
-            } else {
-              imgUrl = 'https://cdn.discordapp.com/app-assets/' + act.assets.large_image + '.png?size=128';
             }
-          } else if (act.application_id) {
-            // Fallback: ícone do app pelo application_id
-            imgUrl = 'https://cdn.discordapp.com/app-icons/' + act.application_id + '/' + (act.assets && act.assets.small_image || '') + '.png?size=128';
-            if (!act.assets || !act.assets.small_image) {
-              imgUrl = '';
-            }
+          }
+          // Fallback: busca ícone do app pela API pública do Discord
+          var appId = act.application_id || '';
+          if (!imgUrl && appId) {
+            imgUrl = '__FETCH_ICON__' + appId;
           }
 
           // Cor
@@ -621,8 +618,12 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       div.style.border = '1px solid ' + card.color.border;
 
       var imgHtml = '';
-      if (card.img) {
-        imgHtml = '<img src="' + card.img + '" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;" />';
+      if (card.img && card.img.startsWith('__FETCH_ICON__')) {
+        // Placeholder — vai ser preenchido via fetch
+        var fetchAppId = card.img.replace('__FETCH_ICON__', '');
+        imgHtml = '<img data-fetch-icon="' + fetchAppId + '" src="" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;display:none;" />';
+      } else if (card.img) {
+        imgHtml = '<img src="' + card.img + '" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\'" />';
       }
 
       var progressHtml = '';
@@ -645,6 +646,20 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
 
       container.appendChild(div);
     }
+
+    // Fetch ícones de apps que não tinham imagem
+    var fetchIcons = container.querySelectorAll('[data-fetch-icon]');
+    fetchIcons.forEach(function(img) {
+      var appId = img.getAttribute('data-fetch-icon');
+      fetch('https://discord.com/api/v10/applications/' + appId + '/rpc')
+        .then(function(r) { return r.json(); })
+        .then(function(app) {
+          if (app.icon) {
+            img.src = 'https://cdn.discordapp.com/app-icons/' + appId + '/' + app.icon + '.png?size=128';
+            img.style.display = 'block';
+          }
+        }).catch(function(){});
+    });
 
     // Mostrar botão expand se tem mais de 1 card
     if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
