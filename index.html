@@ -472,10 +472,11 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       transform-origin:top center;
     }
     .act-card.act-hidden{
-      max-height:0;opacity:0;padding:0 14px;margin:0;
-      border-color:transparent;overflow:hidden;
+      max-height:0;opacity:0;padding:0 14px;margin:0;gap:0;
+      border-color:transparent !important;overflow:hidden;
       transform:translateY(-10px) scale(.96);
       transition:all .35s cubic-bezier(.4,0,.2,1);
+      pointer-events:none;
     }
     .act-card.act-visible{
       max-height:120px;opacity:1;
