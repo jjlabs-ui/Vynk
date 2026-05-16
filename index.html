@@ -456,7 +456,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     </div>
     <!-- Setinha expand/collapse -->
     <div id="actExpandBtn" onclick="toggleActivities()" style="display:none;width:100%;padding:5px 0;cursor:pointer;text-align:center;opacity:.35;transition:opacity .2s;">
-      <svg id="actChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .4s cubic-bezier(.4,0,.2,1);display:inline-block;"><path d="M6 9l6 6 6-6"/></svg>
+      <svg id="actChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .4s cubic-bezier(.4,0,.2,1);display:inline-block;transform:rotate(180deg);"><path d="M6 9l6 6 6-6"/></svg>
     </div>
   </div>
   <style>
@@ -486,21 +486,33 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     }
   </style>
   <script>
-  var actExpanded=false;
+  var actExpanded=true; // Começa aberto
+  var actAutoTimer=null;
 
   function toggleActivities(){
     actExpanded=!actExpanded;
     var chevron=document.getElementById('actChevron');
     var cards=document.querySelectorAll('.act-card.act-secondary-card');
 
+    clearTimeout(actAutoTimer);
+
     if(actExpanded){
       chevron.classList.add('up');
       cards.forEach(function(c){c.classList.remove('act-hidden');c.classList.add('act-visible');});
+      // Auto-fecha depois de 30s
+      actAutoTimer=setTimeout(function(){
+        if(actExpanded) toggleActivities();
+      }, 30000);
     } else {
       chevron.classList.remove('up');
       cards.forEach(function(c){c.classList.remove('act-visible');c.classList.add('act-hidden');});
     }
   }
+
+  // Auto-fecha depois de 30s ao carregar
+  setTimeout(function(){
+    if(actExpanded) toggleActivities();
+  }, 30000);
 
   function buildActivityCards(data) {
     var container = document.getElementById('actContainer');
