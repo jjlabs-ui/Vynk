@@ -313,7 +313,7 @@ export default function App() {
   const [views, setViews] = useState(0)
 
   useEffect(() => {
-    const run = async () => {
+    const run = async () => { 
       try {
         const ns  = (CONFIG.name || 'default').replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase()
         const key = 'hv_' + ns
