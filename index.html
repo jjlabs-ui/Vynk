@@ -1162,42 +1162,6 @@ card.addEventListener('mouseleave',function(){
       }
     }
 
-    // Badges do Discord (via public_flags)
-    var badgesContainer = document.querySelector('.profile-badges');
-    if (badgesContainer && data.discord_user) {
-      var flags = data.discord_user.public_flags || 0;
-      var badgesHtml = '';
-
-      // Mapa de flags → badge SVG/imagem
-      var badgeMap = [
-        { flag: 1 << 0, name: 'Discord Staff', img: 'https://cdn.discordapp.com/badge-icons/5e74e9b61934fc1f67c65515d1f7e60d.png' },
-        { flag: 1 << 1, name: 'Partnered Server Owner', img: 'https://cdn.discordapp.com/badge-icons/3f9748e53446575cb5b0e4a4d6a4ef3a.png' },
-        { flag: 1 << 2, name: 'HypeSquad Events', img: 'https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png' },
-        { flag: 1 << 3, name: 'Bug Hunter Level 1', img: 'https://cdn.discordapp.com/badge-icons/2717692c7dca7289b35297368a940dd0.png' },
-        { flag: 1 << 6, name: 'HypeSquad Bravery', img: 'https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png' },
-        { flag: 1 << 7, name: 'HypeSquad Brilliance', img: 'https://cdn.discordapp.com/badge-icons/011940fd013da3f7fb926e4a1cd2e618.png' },
-        { flag: 1 << 8, name: 'HypeSquad Balance', img: 'https://cdn.discordapp.com/badge-icons/3aa41de486fa12454c3761e8e223e334.png' },
-        { flag: 1 << 9, name: 'Early Supporter', img: 'https://cdn.discordapp.com/badge-icons/7060786766c9c840eb3019e725d2b358.png' },
-        { flag: 1 << 14, name: 'Bug Hunter Level 2', img: 'https://cdn.discordapp.com/badge-icons/848f79194d4be5ff5f81505cbd0ce1e6.png' },
-        { flag: 1 << 17, name: 'Early Verified Bot Developer', img: 'https://cdn.discordapp.com/badge-icons/6df5892e0f35b051f8b61eace34f4967.png' },
-        { flag: 1 << 18, name: 'Moderator Programs Alumni', img: 'https://cdn.discordapp.com/badge-icons/fee1624003e2fee35cb398e125dc479b.png' },
-        { flag: 1 << 22, name: 'Active Developer', img: 'https://cdn.discordapp.com/badge-icons/6bdc42827a38498929a4920da12695d9.png' },
-      ];
-
-      for (var b = 0; b < badgeMap.length; b++) {
-        if (flags & badgeMap[b].flag) {
-          badgesHtml += '<img class="profile-badge-svg" src="' + badgeMap[b].img + '" title="' + badgeMap[b].name + '" alt="' + badgeMap[b].name + '" />';
-        }
-      }
-
-      // Nitro badge (não tem flag, mas se tem avatar animado geralmente tem Nitro)
-      if (data.discord_user.avatar && data.discord_user.avatar.startsWith('a_')) {
-        badgesHtml += '<img class="profile-badge-svg" src="https://cdn.discordapp.com/badge-icons/2ba85e8026a8614b640c2837bcdfe21b.png" title="Nitro" alt="Nitro" />';
-      }
-
-      badgesContainer.innerHTML = badgesHtml;
-    }
-
     // Spotify — pausa música do site e mostra no player
     var spotifyCard = document.getElementById('spotifyCard');
 
