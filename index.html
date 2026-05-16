@@ -524,7 +524,13 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       'Apex Legends': {bg:'rgba(200,50,50,.08)',border:'rgba(200,50,50,.2)',label:'#cd3333'},
       'Overwatch 2': {bg:'rgba(255,150,0,.08)',border:'rgba(255,150,0,.2)',label:'#ff9600'},
       'Visual Studio Code': {bg:'rgba(0,120,215,.08)',border:'rgba(0,120,215,.2)',label:'#0078d7'},
-      'Call of Duty': {bg:'rgba(50,180,50,.08)',border:'rgba(50,180,50,.2)',label:'#32b432'},
+      'Call of Duty': {bg:'rgba(255,140,0,.08)',border:'rgba(255,140,0,.2)',label:'#ff8c00'},
+      'Black Ops': {bg:'rgba(255,100,0,.08)',border:'rgba(255,100,0,.2)',label:'#ff6400'},
+      'Warzone': {bg:'rgba(255,140,0,.08)',border:'rgba(255,140,0,.2)',label:'#ff8c00'},
+      'Rainbow Six': {bg:'rgba(255,255,255,.06)',border:'rgba(255,255,255,.15)',label:'#ffffff'},
+      'Rocket League': {bg:'rgba(0,120,255,.08)',border:'rgba(0,120,255,.2)',label:'#0078ff'},
+      'FIFA': {bg:'rgba(0,100,0,.08)',border:'rgba(0,150,0,.2)',label:'#009600'},
+      'EA FC': {bg:'rgba(0,100,0,.08)',border:'rgba(0,150,0,.2)',label:'#009600'},
     };
 
     // Apps que são "editores/ferramentas" (prioridade menor que jogos)
@@ -547,6 +553,14 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
               imgUrl = 'https://i.scdn.co/image/' + act.assets.large_image.replace('spotify:', '');
             } else if (act.application_id) {
               imgUrl = 'https://cdn.discordapp.com/app-assets/' + act.application_id + '/' + act.assets.large_image + '.png?size=128';
+            } else {
+              imgUrl = 'https://cdn.discordapp.com/app-assets/' + act.assets.large_image + '.png?size=128';
+            }
+          } else if (act.application_id) {
+            // Fallback: ícone do app pelo application_id
+            imgUrl = 'https://cdn.discordapp.com/app-icons/' + act.application_id + '/' + (act.assets && act.assets.small_image || '') + '.png?size=128';
+            if (!act.assets || !act.assets.small_image) {
+              imgUrl = '';
             }
           }
 
