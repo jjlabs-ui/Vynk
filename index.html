@@ -456,7 +456,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     </div>
     <!-- Setinha expand/collapse -->
     <div id="actExpandBtn" onclick="toggleActivities()" style="display:none;width:100%;padding:5px 0;cursor:pointer;text-align:center;opacity:.35;transition:opacity .2s;">
-      <svg id="actChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .4s cubic-bezier(.4,0,.2,1);display:inline-block;transform:rotate(180deg);"><path d="M6 9l6 6 6-6"/></svg>
+      <svg id="actChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .4s cubic-bezier(.4,0,.2,1);display:inline-block;"><path d="M6 9l6 6 6-6"/></svg>
     </div>
   </div>
   <style>
@@ -477,6 +477,11 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     }
     #actExpandBtn:hover{opacity:.7;}
     #actChevron.up{transform:rotate(180deg);}
+    @keyframes chevronBounce{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(4px);}
+    }
+    #actExpandBtn.hint{animation:chevronBounce 1.2s ease-in-out 3;}
     #activityWrap{order:90;}
     #profileCard{order:85;}
     .copyright{order:95;}
@@ -495,20 +500,28 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
   function toggleActivities(){
     actExpanded = !actExpanded;
     var chevron = document.getElementById('actChevron');
+    var expandBtn = document.getElementById('actExpandBtn');
     var cards = document.querySelectorAll('.act-card.act-secondary-card');
 
     clearTimeout(actAutoTimer);
 
     if(actExpanded){
+      // Aberto: setinha pra cima
       chevron.classList.add('up');
+      expandBtn.classList.remove('hint');
       cards.forEach(function(c){c.classList.remove('act-hidden');c.classList.add('act-visible');});
       // Auto-fecha depois de 30s
       actAutoTimer = setTimeout(function(){
         if(actExpanded) toggleActivities();
       }, 30000);
     } else {
+      // Fechado: setinha pra baixo + animação de hint
       chevron.classList.remove('up');
       cards.forEach(function(c){c.classList.remove('act-visible');c.classList.add('act-hidden');});
+      // Animação de bounce pra pessoa ver que tem mais
+      setTimeout(function(){
+        expandBtn.classList.add('hint');
+      }, 500);
     }
   }
 
@@ -684,6 +697,9 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       // Auto-fecha na primeira vez depois de 30s
       if (actFirstLoad) {
         actFirstLoad = false;
+        // Setinha começa pra cima (aberto)
+        var chevron = document.getElementById('actChevron');
+        if (chevron) chevron.classList.add('up');
         actAutoTimer = setTimeout(function(){
           if(actExpanded) toggleActivities();
         }, 30000);
