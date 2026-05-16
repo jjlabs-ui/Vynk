@@ -651,9 +651,44 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     // Checa se a lista de atividades mudou (pra não reconstruir DOM desnecessariamente)
     var newKey = cards.map(function(c){ return c.id; }).join('|');
     var needsRebuild = (newKey !== lastCardsKey);
+    var oldKey = lastCardsKey;
     lastCardsKey = newKey;
 
     if (needsRebuild) {
+      // Animação de saída nos cards antigos
+      var oldCards = container.querySelectorAll('.act-card');
+      if (oldCards.length > 0 && oldKey !== '') {
+        oldCards.forEach(function(c) {
+          c.style.transition = 'opacity .3s, transform .3s';
+          c.style.opacity = '0';
+          c.style.transform = 'translateY(-8px) scale(.95)';
+        });
+        // Espera a animação terminar antes de reconstruir
+        setTimeout(function() { renderCards(container, cards, btn); }, 300);
+      } else {
+        renderCards(container, cards, btn);
+      }
+    } else {
+      // Só atualiza textos e progresso sem reconstruir DOM
+      for (var c = 0; c < cards.length; c++) {
+        var card = cards[c];
+        var el = container.querySelector('[data-card-id="' + card.id + '"]');
+        if (!el) continue;
+        var nameEl = el.querySelector('[data-name]');
+        var detailEl = el.querySelector('[data-detail]');
+        var stateEl = el.querySelector('[data-state]');
+        var progressEl = el.querySelector('[data-progress]');
+        if (nameEl) nameEl.textContent = card.name;
+        if (detailEl) detailEl.textContent = card.detail || '';
+        if (stateEl) stateEl.textContent = card.state || '';
+        if (progressEl && card.isSpotify) progressEl.style.width = card.progress + '%';
+      }
+    }
+
+    if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
+  }
+
+  function renderCards(container, cards, btn) {
       container.innerHTML = '';
 
       for (var c = 0; c < cards.length; c++) {
@@ -662,6 +697,8 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? ' act-visible' : ' act-hidden') : '');
         div.style.background = card.color.bg;
         div.style.border = '1px solid ' + card.color.border;
+        div.style.opacity = '0';
+        div.style.transform = 'translateY(10px) scale(.95)';
         div.setAttribute('data-card-id', card.id);
 
         var imgHtml = '';
@@ -700,6 +737,8 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           '</div>';
 
         container.appendChild(div);
+        // Animação de entrada escalonada
+        (function(el, delay){ setTimeout(function(){ el.style.transition='opacity .35s ease,transform .35s ease'; el.style.opacity='1'; el.style.transform='translateY(0) scale(1)'; }, delay); })(div, 60 * c);
       }
 
       // Fetch ícones que faltam
@@ -720,7 +759,6 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       // Auto-fecha na primeira vez depois de 30s
       if (actFirstLoad) {
         actFirstLoad = false;
-        // Setinha começa pra cima (aberto)
         var chevron = document.getElementById('actChevron');
         if (chevron) chevron.classList.add('up');
         actAutoTimer = setTimeout(function(){
@@ -728,24 +766,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         }, 30000);
       }
 
-    } else {
-      // Só atualiza textos e progresso sem reconstruir DOM
-      for (var c = 0; c < cards.length; c++) {
-        var card = cards[c];
-        var el = container.querySelector('[data-card-id="' + card.id + '"]');
-        if (!el) continue;
-        var nameEl = el.querySelector('[data-name]');
-        var detailEl = el.querySelector('[data-detail]');
-        var stateEl = el.querySelector('[data-state]');
-        var progressEl = el.querySelector('[data-progress]');
-        if (nameEl) nameEl.textContent = card.name;
-        if (detailEl) detailEl.textContent = card.detail || '';
-        if (stateEl) stateEl.textContent = card.state || '';
-        if (progressEl && card.isSpotify) progressEl.style.width = card.progress + '%';
-      }
-    }
-
-    if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
+      if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
   }
   </script>
 
