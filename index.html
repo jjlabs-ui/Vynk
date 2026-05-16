@@ -518,10 +518,10 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       chevron.classList.add('up');
       expandBtn.classList.remove('hint');
       cards.forEach(function(c){c.classList.remove('act-hidden');c.classList.add('act-visible');});
-      // Auto-fecha depois de 30s
+      // Auto-fecha depois de 15s
       actAutoTimer = setTimeout(function(){
         if(actExpanded) toggleActivities();
-      }, 30000);
+      }, 15000);
     } else {
       // Fechado: setinha pra baixo + animação de hint
       chevron.classList.remove('up');
@@ -529,7 +529,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       // Animação de bounce pra pessoa ver que tem mais
       setTimeout(function(){
         expandBtn.classList.add('hint');
-      }, 500);
+      }, 400);
     }
   }
 
@@ -790,14 +790,14 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           }).catch(function(){});
       });
 
-      // Auto-fecha na primeira vez depois de 30s
+      // Auto-fecha na primeira vez depois de 15s
       if (actFirstLoad) {
         actFirstLoad = false;
         var chevron = document.getElementById('actChevron');
         if (chevron) chevron.classList.add('up');
         actAutoTimer = setTimeout(function(){
           if(actExpanded) toggleActivities();
-        }, 30000);
+        }, 15000);
       }
 
       if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
