@@ -453,34 +453,6 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
   <!-- Atividades — estilo Discord com animações -->
   <div id="activityWrap" style="display:none;width:100%;">
     <div id="actContainer" style="display:flex;flex-direction:column;gap:8px;">
-      <!-- Card Game/App (prioridade) -->
-      <div id="discordActivity" class="act-card" style="display:none;">
-        <img id="activityIcon" src="" alt="" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;background:rgba(88,101,242,.1);display:none;"/>
-        <svg id="actIconFallback" width="18" height="18" viewBox="0 0 24 24" fill="rgba(88,101,242,.8)" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke="rgba(88,101,242,.8)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        <div style="flex:1;min-width:0;">
-          <div data-label style="font-size:9px;color:rgba(88,101,242,.7);text-transform:uppercase;font-weight:600;letter-spacing:.5px;margin-bottom:2px;">jogando</div>
-          <div id="activityName" style="font-size:12.5px;font-weight:600;color:rgba(255,255,255,.9);"></div>
-          <div id="activityDetail" style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-          <div id="activityState" style="font-size:10px;color:rgba(255,255,255,.3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-        </div>
-      </div>
-      <!-- Card Spotify (secundário) -->
-      <div id="spotifyCard" class="act-card act-secondary" style="display:none;">
-        <img id="spotifyCover" src="" alt="cover" style="width:38px;height:38px;border-radius:8px;object-fit:cover;flex-shrink:0;"/>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(30,215,96,.9)"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-            <span style="font-size:9px;color:rgba(30,215,96,.7);letter-spacing:.5px;text-transform:uppercase;font-weight:600;">ouvindo agora</span>
-          </div>
-          <div id="spotifyTitle" style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-          <div id="spotifyArtist" style="font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;"></div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-            <div style="flex:1;height:2px;background:rgba(30,215,96,.15);border-radius:99px;">
-              <div id="spotifyBar" style="height:100%;background:rgba(30,215,96,.7);border-radius:99px;width:0%;transition:width 2s linear;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
     <!-- Setinha expand/collapse -->
     <div id="actExpandBtn" onclick="toggleActivities()" style="display:none;width:100%;padding:5px 0;cursor:pointer;text-align:center;opacity:.35;transition:opacity .2s;">
@@ -494,17 +466,13 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       transition:all .4s cubic-bezier(.4,0,.2,1);
       transform-origin:top center;
     }
-    #discordActivity{background:rgba(88,101,242,.06);border:1px solid rgba(88,101,242,.12);}
-    #spotifyCard{background:rgba(30,215,96,.06);border:1px solid rgba(30,215,96,.12);}
-    .act-card.act-entering{animation:actSlideIn .4s cubic-bezier(.4,0,.2,1) forwards;}
-    .act-card.act-leaving{animation:actSlideOut .35s cubic-bezier(.4,0,.2,1) forwards;}
-    .act-secondary.act-collapsed{
+    .act-card.act-hidden{
       max-height:0;opacity:0;padding:0 14px;margin:0;
       border-color:transparent;overflow:hidden;
       transform:translateY(-10px) scale(.96);
     }
-    .act-secondary.act-expanded{
-      max-height:100px;opacity:1;
+    .act-card.act-visible{
+      max-height:120px;opacity:1;
       transform:translateY(0) scale(1);
     }
     #actExpandBtn:hover{opacity:.7;}
@@ -516,53 +484,156 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       from{opacity:0;transform:translateY(12px) scale(.95);}
       to{opacity:1;transform:translateY(0) scale(1);}
     }
-    @keyframes actSlideOut{
-      from{opacity:1;transform:translateY(0) scale(1);}
-      to{opacity:0;transform:translateY(-8px) scale(.95);max-height:0;padding:0;margin:0;}
-    }
   </style>
   <script>
   var actExpanded=false;
-  var actAutoTimer=null;
-
-  function refreshActCards(){
-    var sp=document.getElementById('spotifyCard');
-    var dc=document.getElementById('discordActivity');
-    var btn=document.getElementById('actExpandBtn');
-    var hasGame=dc&&dc.style.display==='flex';
-    var hasSpotify=sp&&sp.style.display==='flex';
-
-    // Mostra botão se tem 2 atividades
-    if(hasGame&&hasSpotify){
-      btn.style.display='block';
-      // Spotify começa colapsado (é secundário)
-      if(!actExpanded){
-        sp.classList.add('act-collapsed');
-        sp.classList.remove('act-expanded');
-      }
-    } else {
-      btn.style.display='none';
-      if(sp){sp.classList.remove('act-collapsed');sp.classList.remove('act-expanded');}
-    }
-  }
 
   function toggleActivities(){
     actExpanded=!actExpanded;
-    var sp=document.getElementById('spotifyCard');
     var chevron=document.getElementById('actChevron');
-    clearTimeout(actAutoTimer);
+    var cards=document.querySelectorAll('.act-card.act-secondary-card');
 
     if(actExpanded){
       chevron.classList.add('up');
-      if(sp){sp.classList.remove('act-collapsed');sp.classList.add('act-expanded');}
-      // Auto-recolhe depois de 15s
-      actAutoTimer=setTimeout(function(){
-        if(actExpanded)toggleActivities();
-      },15000);
+      cards.forEach(function(c){c.classList.remove('act-hidden');c.classList.add('act-visible');});
     } else {
       chevron.classList.remove('up');
-      if(sp){sp.classList.remove('act-expanded');sp.classList.add('act-collapsed');}
+      cards.forEach(function(c){c.classList.remove('act-visible');c.classList.add('act-hidden');});
     }
+  }
+
+  function buildActivityCards(data) {
+    var container = document.getElementById('actContainer');
+    var wrap = document.getElementById('activityWrap');
+    var btn = document.getElementById('actExpandBtn');
+    if (!container) return;
+
+    container.innerHTML = '';
+    var cards = [];
+
+    // Cores por app
+    var appColors = {
+      'VALORANT': {bg:'rgba(255,70,85,.08)',border:'rgba(255,70,85,.2)',label:'#ff4655'},
+      'League of Legends': {bg:'rgba(200,155,60,.08)',border:'rgba(200,155,60,.2)',label:'#c89b3c'},
+      'Counter-Strike 2': {bg:'rgba(255,165,0,.08)',border:'rgba(255,165,0,.2)',label:'#ffa500'},
+      'Minecraft': {bg:'rgba(80,200,80,.08)',border:'rgba(80,200,80,.2)',label:'#55c055'},
+      'Fortnite': {bg:'rgba(0,150,255,.08)',border:'rgba(0,150,255,.2)',label:'#0096ff'},
+      'GTA V': {bg:'rgba(100,200,100,.08)',border:'rgba(100,200,100,.2)',label:'#64c864'},
+      'Dead by Daylight': {bg:'rgba(200,50,50,.08)',border:'rgba(200,50,50,.2)',label:'#c83232'},
+      'Roblox': {bg:'rgba(230,50,50,.08)',border:'rgba(230,50,50,.2)',label:'#e83232'},
+      'Apex Legends': {bg:'rgba(200,50,50,.08)',border:'rgba(200,50,50,.2)',label:'#cd3333'},
+      'Overwatch 2': {bg:'rgba(255,150,0,.08)',border:'rgba(255,150,0,.2)',label:'#ff9600'},
+      'Visual Studio Code': {bg:'rgba(0,120,215,.08)',border:'rgba(0,120,215,.2)',label:'#0078d7'},
+      'Call of Duty': {bg:'rgba(50,180,50,.08)',border:'rgba(50,180,50,.2)',label:'#32b432'},
+    };
+
+    // Apps que são "editores/ferramentas" (prioridade menor que jogos)
+    var editorApps = ['Visual Studio Code', 'IntelliJ IDEA', 'WebStorm', 'Sublime Text', 'Neovim', 'Cursor'];
+
+    // 1. Coletar atividades tipo 0 (jogos/apps)
+    if (data.activities) {
+      for (var i = 0; i < data.activities.length; i++) {
+        var act = data.activities[i];
+        if (act.type === 0) {
+          var isEditor = editorApps.some(function(e){ return act.name && act.name.indexOf(e) !== -1; });
+          var priority = isEditor ? 2 : 1; // 1 = jogo (alta), 2 = editor (média)
+
+          // Imagem
+          var imgUrl = '';
+          if (act.assets && act.assets.large_image) {
+            if (act.assets.large_image.startsWith('mp:')) {
+              imgUrl = 'https://media.discordapp.net/' + act.assets.large_image.replace('mp:', '');
+            } else if (act.assets.large_image.startsWith('spotify:')) {
+              imgUrl = 'https://i.scdn.co/image/' + act.assets.large_image.replace('spotify:', '');
+            } else if (act.application_id) {
+              imgUrl = 'https://cdn.discordapp.com/app-assets/' + act.application_id + '/' + act.assets.large_image + '.png?size=128';
+            }
+          }
+
+          // Cor
+          var colorKey = Object.keys(appColors).find(function(k){ return act.name && act.name.indexOf(k) !== -1; });
+          var color = appColors[colorKey] || {bg:'rgba(88,101,242,.06)',border:'rgba(88,101,242,.12)',label:'rgba(88,101,242,.8)'};
+
+          cards.push({
+            priority: priority,
+            name: act.name || '',
+            detail: act.details || '',
+            state: act.state || '',
+            img: imgUrl,
+            color: color,
+            label: isEditor ? 'programando' : 'jogando'
+          });
+        }
+      }
+    }
+
+    // 2. Spotify (prioridade 3 — mais baixa)
+    if (data.listening_to_spotify && data.spotify) {
+      var sp = data.spotify;
+      var pct = 0;
+      if (sp.timestamps) {
+        var now = Date.now();
+        pct = Math.min(100, ((now - sp.timestamps.start) / (sp.timestamps.end - sp.timestamps.start)) * 100);
+      }
+      cards.push({
+        priority: 3,
+        name: sp.song || '',
+        detail: sp.artist || '',
+        state: '',
+        img: sp.album_art_url || '',
+        color: {bg:'rgba(30,215,96,.06)',border:'rgba(30,215,96,.12)',label:'rgba(30,215,96,.8)'},
+        label: 'ouvindo agora',
+        isSpotify: true,
+        progress: pct
+      });
+    }
+
+    // Ordenar por prioridade
+    cards.sort(function(a,b){ return a.priority - b.priority; });
+
+    if (cards.length === 0) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+
+    if (wrap) wrap.style.display = 'block';
+
+    // Renderizar cards
+    for (var c = 0; c < cards.length; c++) {
+      var card = cards[c];
+      var div = document.createElement('div');
+      div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? ' act-visible' : ' act-hidden') : '');
+      div.style.background = card.color.bg;
+      div.style.border = '1px solid ' + card.color.border;
+
+      var imgHtml = '';
+      if (card.img) {
+        imgHtml = '<img src="' + card.img + '" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;" />';
+      }
+
+      var progressHtml = '';
+      if (card.isSpotify) {
+        progressHtml = '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><div style="flex:1;height:2px;background:rgba(30,215,96,.15);border-radius:99px;"><div style="height:100%;background:rgba(30,215,96,.7);border-radius:99px;width:' + card.progress + '%;transition:width 2s linear;"></div></div></div>';
+      }
+
+      var spotifyIcon = card.isSpotify ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(30,215,96,.9)" style="flex-shrink:0;"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>' : '';
+
+      div.innerHTML = imgHtml +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">' + spotifyIcon +
+            '<span style="font-size:9px;color:' + card.color.label + ';text-transform:uppercase;font-weight:600;letter-spacing:.5px;">' + card.label + '</span>' +
+          '</div>' +
+          '<div style="font-size:12.5px;font-weight:600;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + card.name + '</div>' +
+          (card.detail ? '<div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + card.detail + '</div>' : '') +
+          (card.state ? '<div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + card.state + '</div>' : '') +
+          progressHtml +
+        '</div>';
+
+      container.appendChild(div);
+    }
+
+    // Mostrar botão expand se tem mais de 1 card
+    if (btn) btn.style.display = cards.length > 1 ? 'block' : 'none';
   }
   </script>
 
@@ -1162,114 +1233,19 @@ card.addEventListener('mouseleave',function(){
       }
     }
 
-    // Spotify — pausa música do site e mostra no player
-    var spotifyCard = document.getElementById('spotifyCard');
+    // Spotify e atividades — renderiza tudo junto
+    buildActivityCards(data);
 
-    if (data.listening_to_spotify && data.spotify) {
-      var sp = data.spotify;
-      document.getElementById('spotifyCover').src = sp.album_art_url || '';
-      document.getElementById('spotifyTitle').textContent = sp.song || '';
-      document.getElementById('spotifyArtist').textContent = sp.artist || '';
-
-      // Track info para widget
-      window._spotifyTrackId = sp.track_id || '';
-      spotifyCard.style.display = 'flex';
-
+    if (data.listening_to_spotify) {
       spotifyActive = true;
       lanyardReady = true;
-
-      // Spotify info shown only in Discord activity card, not in music player
-
-      // Progress bar for spotify card only
-      if (sp.timestamps) {
-        var now = Date.now();
-        var start = sp.timestamps.start;
-        var end = sp.timestamps.end;
-        var pct = Math.min(100, ((now - start) / (end - start)) * 100);
-        var bar = document.getElementById('spotifyBar');
-        if (bar) bar.style.width = pct + '%';
-      }
-
+      window._spotifyTrackId = (data.spotify && data.spotify.track_id) || '';
       onLanyardFirstResponse(data);
     } else {
-      if (spotifyCard) spotifyCard.style.display = 'none';
-
       if (spotifyActive) {
         spotifyActive = false;
       }
-
       onLanyardFirstResponse(data);
-    }
-
-    // Discord activity (game, etc)
-    var actCard = document.getElementById('discordActivity');
-    if (data.activities && data.activities.length > 0) {
-      var game = null;
-      for (var j = 0; j < data.activities.length; j++) {
-        if (data.activities[j].type === 0) { game = data.activities[j]; break; }
-      }
-      if (game) {
-        document.getElementById('activityName').textContent = game.name || '';
-        document.getElementById('activityDetail').textContent = game.details || '';
-        document.getElementById('activityState').textContent = game.state || '';
-
-        // Cores temáticas por jogo
-        var gameColors = {
-          'VALORANT': {bg:'rgba(255,70,85,.08)',border:'rgba(255,70,85,.2)',label:'#ff4655'},
-          'League of Legends': {bg:'rgba(200,155,60,.08)',border:'rgba(200,155,60,.2)',label:'#c89b3c'},
-          'Counter-Strike 2': {bg:'rgba(255,165,0,.08)',border:'rgba(255,165,0,.2)',label:'#ffa500'},
-          'Minecraft': {bg:'rgba(80,200,80,.08)',border:'rgba(80,200,80,.2)',label:'#55c055'},
-          'Fortnite': {bg:'rgba(0,150,255,.08)',border:'rgba(0,150,255,.2)',label:'#0096ff'},
-          'GTA V': {bg:'rgba(100,200,100,.08)',border:'rgba(100,200,100,.2)',label:'#64c864'},
-          'Dead by Daylight': {bg:'rgba(200,50,50,.08)',border:'rgba(200,50,50,.2)',label:'#c83232'},
-          'Roblox': {bg:'rgba(230,50,50,.08)',border:'rgba(230,50,50,.2)',label:'#e83232'},
-          'Apex Legends': {bg:'rgba(200,50,50,.08)',border:'rgba(200,50,50,.2)',label:'#cd3333'},
-          'Overwatch 2': {bg:'rgba(255,150,0,.08)',border:'rgba(255,150,0,.2)',label:'#ff9600'},
-          'Spotify': {bg:'rgba(30,215,96,.08)',border:'rgba(30,215,96,.2)',label:'#1ed760'},
-          'Visual Studio Code': {bg:'rgba(0,120,215,.08)',border:'rgba(0,120,215,.2)',label:'#0078d7'},
-        };
-        var gName = game.name || '';
-        var gColor = gameColors[gName] || {bg:'rgba(88,101,242,.06)',border:'rgba(88,101,242,.12)',label:'rgba(88,101,242,.8)'};
-        actCard.style.background = gColor.bg;
-        actCard.style.borderColor = gColor.border;
-        var labelEl = actCard.querySelector('[data-label]');
-        if(labelEl) labelEl.style.color = gColor.label;
-
-        // Imagem da atividade
-        var actIcon = document.getElementById('activityIcon');
-        var actFallback = document.getElementById('actIconFallback');
-        if (game.assets && game.assets.large_image) {
-          var imgUrl = '';
-          if (game.assets.large_image.startsWith('mp:')) {
-            imgUrl = 'https://media.discordapp.net/' + game.assets.large_image.replace('mp:', '');
-          } else if (game.assets.large_image.startsWith('spotify:')) {
-            imgUrl = 'https://i.scdn.co/image/' + game.assets.large_image.replace('spotify:', '');
-          } else if (game.application_id) {
-            imgUrl = 'https://cdn.discordapp.com/app-assets/' + game.application_id + '/' + game.assets.large_image + '.png?size=128';
-          }
-          if (imgUrl && actIcon) { actIcon.src = imgUrl; actIcon.style.display = 'block'; }
-          if (actFallback) actFallback.style.display = imgUrl ? 'none' : 'block';
-        } else {
-          if (actIcon) actIcon.style.display = 'none';
-          if (actFallback) { actFallback.style.display = 'block'; actFallback.style.fill = gColor.label; }
-        }
-
-        actCard.style.display = 'flex';
-      } else {
-        actCard.style.display = 'none';
-      }
-    } else {
-      if (actCard) actCard.style.display = 'none';
-    }
-
-    // Mostra/esconde o wrap e atualiza carrossel
-    var actWrap = document.getElementById('activityWrap');
-    var hasAny = (data.listening_to_spotify) || (data.activities && data.activities.some(function(a){return a.type===0;}));
-    if (hasAny) {
-      if (actWrap) actWrap.style.display = 'block';
-      refreshActCards();
-    } else {
-      if (actWrap) actWrap.style.display = 'none';
     }
   }
 
@@ -1300,21 +1276,16 @@ card.addEventListener('mouseleave',function(){
 
   connectWS();
 
-  // Spotify bar updater
+  // Spotify bar updater — atualiza a barra de progresso no novo sistema
   setInterval(function() {
-    var bar = document.getElementById('spotifyBar');
-    var card = document.getElementById('spotifyCard');
-    if (!bar || !card || card.style.display === 'none') return;
-    // re-fetch via REST as fallback for bar progress
+    // Re-renderiza os cards pra atualizar progresso do Spotify
     fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID)
       .then(function(r) { return r.json(); })
       .then(function(d) {
-        if (d.success && d.data && d.data.spotify && d.data.spotify.timestamps) {
-          var now = Date.now();
-          var pct = Math.min(100, ((now - d.data.spotify.timestamps.start) / (d.data.spotify.timestamps.end - d.data.spotify.timestamps.start)) * 100);
-          bar.style.width = pct + '%';
+        if (d.success && d.data) {
+          buildActivityCards(d.data);
         }
       }).catch(function(){});
-  }, 5000);
+  }, 10000);
 })();
 </script></body></html>
