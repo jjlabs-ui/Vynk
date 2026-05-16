@@ -608,9 +608,13 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     if (data.listening_to_spotify && data.spotify) {
       var sp = data.spotify;
       var pct = 0;
+      var spElapsed = 0;
+      var spDuration = 0;
       if (sp.timestamps) {
         var now = Date.now();
-        pct = Math.min(100, ((now - sp.timestamps.start) / (sp.timestamps.end - sp.timestamps.start)) * 100);
+        spElapsed = Math.floor((now - sp.timestamps.start) / 1000);
+        spDuration = Math.floor((sp.timestamps.end - sp.timestamps.start) / 1000);
+        pct = Math.min(100, (spElapsed / spDuration) * 100);
       }
       cards.push({
         id: 'spotify_' + (sp.track_id || ''),
@@ -623,7 +627,11 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         color: {bg:'rgba(30,215,96,.06)',border:'rgba(30,215,96,.12)',label:'rgba(30,215,96,.8)'},
         label: 'ouvindo agora',
         isSpotify: true,
-        progress: pct
+        progress: pct,
+        elapsed: spElapsed,
+        duration: spDuration,
+        startTs: sp.timestamps ? sp.timestamps.start : 0,
+        endTs: sp.timestamps ? sp.timestamps.end : 0
       });
     }
 
@@ -660,7 +668,17 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
 
         var progressHtml = '';
         if (card.isSpotify) {
-          progressHtml = '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><div style="flex:1;height:2px;background:rgba(30,215,96,.15);border-radius:99px;"><div data-progress style="height:100%;background:rgba(30,215,96,.7);border-radius:99px;width:' + card.progress + '%;transition:width 2s linear;"></div></div></div>';
+          var elMin = Math.floor(card.elapsed / 60);
+          var elSec = card.elapsed % 60;
+          var durMin = Math.floor(card.duration / 60);
+          var durSec = card.duration % 60;
+          var elStr = (elMin < 10 ? '0' : '') + elMin + ':' + (elSec < 10 ? '0' : '') + elSec;
+          var durStr = (durMin < 10 ? '0' : '') + durMin + ':' + (durSec < 10 ? '0' : '') + durSec;
+          progressHtml = '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;">' +
+            '<span data-elapsed style="font-size:9px;color:rgba(30,215,96,.6);font-variant-numeric:tabular-nums;min-width:32px;">' + elStr + '</span>' +
+            '<div style="flex:1;height:2px;background:rgba(30,215,96,.15);border-radius:99px;"><div data-progress data-start="' + card.startTs + '" data-end="' + card.endTs + '" style="height:100%;background:rgba(30,215,96,.7);border-radius:99px;width:' + card.progress + '%;transition:width 1s linear;"></div></div>' +
+            '<span style="font-size:9px;color:rgba(255,255,255,.3);font-variant-numeric:tabular-nums;min-width:32px;text-align:right;">' + durStr + '</span>' +
+            '</div>';
         }
 
         var spotifyIcon = card.isSpotify ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(30,215,96,.9)" style="flex-shrink:0;"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>' : '';
@@ -1365,16 +1383,25 @@ card.addEventListener('mouseleave',function(){
 
   connectWS();
 
-  // Spotify bar updater — atualiza a barra de progresso no novo sistema
+  // Spotify progress updater — atualiza barra e tempo a cada segundo localmente
   setInterval(function() {
-    // Re-renderiza os cards pra atualizar progresso do Spotify
-    fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID)
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d.success && d.data) {
-          buildActivityCards(d.data);
-        }
-      }).catch(function(){});
-  }, 10000);
+    var bar = document.querySelector('[data-progress]');
+    if (!bar) return;
+    var start = parseInt(bar.getAttribute('data-start'));
+    var end = parseInt(bar.getAttribute('data-end'));
+    if (!start || !end) return;
+    var now = Date.now();
+    var elapsed = Math.floor((now - start) / 1000);
+    var duration = Math.floor((end - start) / 1000);
+    var pct = Math.min(100, (elapsed / duration) * 100);
+    bar.style.width = pct + '%';
+    // Atualiza o tempo
+    var elapsedEl = bar.closest('.act-card') && bar.closest('.act-card').querySelector('[data-elapsed]');
+    if (elapsedEl) {
+      var m = Math.floor(elapsed / 60);
+      var s = elapsed % 60;
+      elapsedEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+  }, 1000);
 })();
 </script></body></html>
