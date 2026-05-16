@@ -308,141 +308,14 @@ function MusicPlayer({ music }) {
   )
 }
 
-/* ─── Palavra Mágica (mude aqui) ─────────────────────────────────────────── */
-const PALAVRA_MAGICA = "jj2024" // ← Mude pra sua senha secreta
-
-// ID do Discord pra puxar avatar via API
-const DISCORD_USER_ID = "000000000000000000" // ← Coloque seu ID do Discord aqui
-
-/* ─── Admin Panel ────────────────────────────────────────────────────────── */
-function AdminPanel({ config, onSave, onClose }) {
-  const [avatar, setAvatar] = useState(config.avatar)
-  const [apiLizard, setApiLizard] = useState(() => {
-    return localStorage.getItem('biolink_api_lizard') === 'true'
-  })
-  const [loading, setLoading] = useState(false)
-
-  async function fetchDiscordAvatar() {
-    setLoading(true)
-    try {
-      const res = await fetch(`https://discord-avatar-api.vercel.app/api/${DISCORD_USER_ID}`)
-      const data = await res.json()
-      if (data.avatar || data.avatarUrl || data.url) {
-        const url = data.avatarUrl || data.avatar || data.url
-        setAvatar(url)
-      }
-    } catch (err) {
-      console.error('Erro ao buscar avatar:', err)
-    }
-    setLoading(false)
-  }
-
-  function toggleApiLizard() {
-    const newVal = !apiLizard
-    setApiLizard(newVal)
-    localStorage.setItem('biolink_api_lizard', String(newVal))
-    if (newVal) fetchDiscordAvatar()
-  }
-
-  return (
-    <div className="admin-overlay" onClick={onClose}>
-      <div className="admin-panel" onClick={e => e.stopPropagation()}>
-        <h2 className="admin-title">⚙️ Painel Secreto</h2>
-
-        {/* API Lizard Toggle */}
-        <div className="admin-toggle-row">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span className="admin-label" style={{ margin: 0, fontSize: 13, color: '#fff' }}>🦎 API Lizard</span>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>
-              Sincroniza foto com o Discord
-            </span>
-          </div>
-          <button
-            className={`admin-toggle ${apiLizard ? 'on' : 'off'}`}
-            onClick={toggleApiLizard}
-          >
-            {apiLizard ? 'Ativado' : 'Desativado'}
-          </button>
-        </div>
-
-        {/* URL Manual */}
-        <label className="admin-label">Foto de Perfil (URL manual)</label>
-        <input
-          className="admin-input"
-          value={avatar}
-          onChange={e => setAvatar(e.target.value)}
-          placeholder="https://..."
-          disabled={apiLizard}
-          style={apiLizard ? { opacity: 0.4 } : {}}
-        />
-        {avatar && <img src={avatar} alt="preview" className="admin-preview" />}
-
-        {loading && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Buscando avatar do Discord...</span>}
-
-        <button
-          className="admin-save"
-          onClick={() => onSave({ avatar, apiLizard })}
-        >
-          Salvar
-        </button>
-        <button className="admin-close" onClick={onClose}>Fechar</button>
-      </div>
-    </div>
-  )
-}
-
 /* ─── App ────────────────────────────────────────────────────────────────── */
 export default function App() {
   const [views, setViews] = useState(0)
-  const [showAdmin, setShowAdmin] = useState(false)
-  const [config, setConfig] = useState(() => {
-    const saved = localStorage.getItem('biolink_config')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      return { ...CONFIG, ...parsed, profileCard: { ...CONFIG.profileCard, ...parsed.profileCard } }
-    }
-    return CONFIG
-  })
-
-  function handleAvatarClick() {
-    const senha = prompt("🔒 Palavra mágica:")
-    if (senha && senha.trim() === PALAVRA_MAGICA) {
-      setShowAdmin(true)
-    }
-  }
-
-  function handleSave({ avatar, apiLizard }) {
-    const updated = {
-      ...config,
-      avatar,
-    }
-    setConfig(updated)
-    localStorage.setItem('biolink_config', JSON.stringify({ avatar }))
-    localStorage.setItem('biolink_api_lizard', String(apiLizard))
-    setShowAdmin(false)
-  }
-
-  // Se API Lizard tá ativada, busca avatar do Discord ao carregar
-  useEffect(() => {
-    const lizardOn = localStorage.getItem('biolink_api_lizard') === 'true'
-    if (lizardOn && DISCORD_USER_ID !== '000000000000000000') {
-      fetch(`https://discord-avatar-api.vercel.app/api/${DISCORD_USER_ID}`)
-        .then(r => r.json())
-        .then(data => {
-          const url = data.avatarUrl || data.avatar || data.url
-          if (url) {
-            setConfig(prev => ({ ...prev, avatar: url }))
-            localStorage.setItem('biolink_config', JSON.stringify({ avatar: url }))
-          }
-        })
-        .catch(() => {})
-    }
-  }, [])
 
   useEffect(() => {
     const run = async () => {
       try {
-        const ns  = (config.name || 'default').replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase()
+        const ns  = (CONFIG.name || 'default').replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase()
         const key = 'hv_' + ns
         const visited = localStorage.getItem(key)
         const url = visited
@@ -461,13 +334,6 @@ export default function App() {
   return (
     <>
       <style>{CSS}</style>
-      {showAdmin && (
-        <AdminPanel
-          config={config}
-          onSave={handleSave}
-          onClose={() => setShowAdmin(false)}
-        />
-      )}
       <div className="wrap">
 
         <div className="views">
@@ -475,11 +341,11 @@ export default function App() {
           <span>{views > 0 ? views.toLocaleString() : '–'}</span>
         </div>
 
-        <div className="av-ring" onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
-          <img src={config.avatar} alt="av" className="av" />
+        <div className="av-ring">
+          <img src={CONFIG.avatar} alt="av" className="av" />
         </div>
 
-        <h1 className="uname">{config.name}</h1>
+        <h1 className="uname">{CONFIG.name}</h1>
 
         {CONFIG.badges.length > 0 && (
           <div className="badges">
@@ -509,17 +375,17 @@ export default function App() {
           </div>
         )}
 
-        {config.profileCard.show && (
-          <a href={config.profileCard.href} target="_blank" rel="noopener noreferrer"
+        {CONFIG.profileCard.show && (
+          <a href={CONFIG.profileCard.href} target="_blank" rel="noopener noreferrer"
             className="card pcard">
             <div className="pcard-l">
               <div className="pav-wrap">
-                <img src={config.profileCard.avatar} alt="p" className="pav" />
-                <DiscordPresence presence={config.profileCard.presence} />
+                <img src={CONFIG.profileCard.avatar} alt="p" className="pav" />
+                <DiscordPresence presence={CONFIG.profileCard.presence} />
               </div>
               <div className="ptxt">
-                <span className="pname">{config.profileCard.username}</span>
-                <span className="pstatus">{config.profileCard.status}</span>
+                <span className="pname">{CONFIG.profileCard.username}</span>
+                <span className="pstatus">{CONFIG.profileCard.status}</span>
               </div>
             </div>
             <span className="pbtn">Profile</span>
@@ -607,51 +473,4 @@ const CSS = `
     transition:background 0.2s,color 0.2s; white-space:nowrap;
   }
   .pcard:hover .pbtn { background:rgba(255,255,255,0.15); color:#fff; }
-
-  /* Admin Panel */
-  .admin-overlay {
-    position:fixed; inset:0; z-index:9999;
-    background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);
-    display:flex; align-items:center; justify-content:center;
-    padding:20px;
-  }
-  .admin-panel {
-    background:#111; border:1px solid rgba(255,255,255,0.1);
-    border-radius:16px; padding:28px; width:100%; max-width:360px;
-    display:flex; flex-direction:column; gap:12px;
-  }
-  .admin-title { font-size:18px; font-weight:600; color:#fff; margin:0 0 8px; }
-  .admin-label { font-size:12px; color:rgba(255,255,255,0.5); margin-top:4px; }
-  .admin-input {
-    width:100%; padding:10px 12px; border-radius:8px;
-    border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.05);
-    color:#fff; font-size:13px; outline:none;
-    transition:border-color 0.2s;
-  }
-  .admin-input:focus { border-color:rgba(255,255,255,0.3); }
-  .admin-preview { width:48px; height:48px; border-radius:50%; object-fit:cover; margin-top:4px; }
-  .admin-toggle-row {
-    display:flex; align-items:center; justify-content:space-between;
-    margin-top:8px; padding:8px 0;
-  }
-  .admin-toggle {
-    padding:6px 14px; border-radius:8px; font-size:12px; font-weight:500;
-    border:1px solid rgba(255,255,255,0.15); cursor:pointer;
-    transition:all 0.2s;
-  }
-  .admin-toggle.on { background:#3ba55c; color:#fff; border-color:#3ba55c; }
-  .admin-toggle.off { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); }
-  .admin-save {
-    margin-top:12px; padding:10px; border-radius:10px;
-    background:#5865f2; color:#fff; font-size:14px; font-weight:500;
-    border:none; cursor:pointer; transition:background 0.2s;
-  }
-  .admin-save:hover { background:#4752c4; }
-  .admin-close {
-    padding:8px; border-radius:8px;
-    background:transparent; color:rgba(255,255,255,0.4); font-size:12px;
-    border:1px solid rgba(255,255,255,0.08); cursor:pointer;
-    transition:all 0.2s;
-  }
-  .admin-close:hover { color:#fff; border-color:rgba(255,255,255,0.2); }
 `
