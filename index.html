@@ -475,10 +475,12 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       max-height:0;opacity:0;padding:0 14px;margin:0;
       border-color:transparent;overflow:hidden;
       transform:translateY(-10px) scale(.96);
+      transition:all .35s cubic-bezier(.4,0,.2,1);
     }
     .act-card.act-visible{
       max-height:120px;opacity:1;
       transform:translateY(0) scale(1);
+      transition:all .35s cubic-bezier(.4,0,.2,1);
     }
     #actExpandBtn:hover{opacity:.7;}
     #actChevron.up{transform:rotate(180deg);}
@@ -642,44 +644,61 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
 
     cards.sort(function(a,b){ return a.priority - b.priority; });
 
-    if (cards.length === 0) {
-      // Animação de saída antes de esconder tudo
-      var oldCards = container.querySelectorAll('.act-card');
-      if (oldCards.length > 0) {
-        oldCards.forEach(function(c) {
-          c.style.transition = 'opacity .3s ease, transform .3s ease';
-          c.style.opacity = '0';
-          c.style.transform = 'translateY(-8px) scale(.95)';
-        });
-        setTimeout(function() {
-          if (wrap) wrap.style.display = 'none';
-          container.innerHTML = '';
-          lastCardsKey = '';
-        }, 350);
-      } else {
+    var newKey = cards.map(function(c){ return c.id; }).join('|');
+    var needsRebuild = (newKey !== lastCardsKey);
+    var oldKey = lastCardsKey;
+
+    if (cards.length === 0 && lastCardsKey !== '') {
+      // Tudo sumiu — anima saída de todos e esconde
+      lastCardsKey = '';
+      var allCards = container.querySelectorAll('.act-card');
+      allCards.forEach(function(c, i) {
+        c.style.transition = 'opacity .3s ease ' + (i * 50) + 'ms, transform .3s ease ' + (i * 50) + 'ms';
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(-8px) scale(.95)';
+      });
+      setTimeout(function() {
+        container.innerHTML = '';
         if (wrap) wrap.style.display = 'none';
-      }
+        if (btn) btn.style.display = 'none';
+      }, 350 + (allCards.length * 50));
+      return;
+    }
+
+    if (cards.length === 0) {
+      if (wrap) wrap.style.display = 'none';
       return;
     }
     if (wrap) wrap.style.display = 'block';
 
-    // Checa se a lista de atividades mudou (pra não reconstruir DOM desnecessariamente)
-    var newKey = cards.map(function(c){ return c.id; }).join('|');
-    var needsRebuild = (newKey !== lastCardsKey);
-    var oldKey = lastCardsKey;
-    lastCardsKey = newKey;
-
     if (needsRebuild) {
-      // Animação de saída nos cards antigos antes de reconstruir
-      var oldCards = container.querySelectorAll('.act-card');
-      if (oldCards.length > 0 && oldKey !== '') {
-        oldCards.forEach(function(c) {
-          c.style.transition = 'opacity .3s ease, transform .3s ease';
-          c.style.opacity = '0';
-          c.style.transform = 'translateY(-8px) scale(.95)';
+      // Descobre quais cards saíram e quais entraram
+      var oldIds = oldKey ? oldKey.split('|') : [];
+      var newIds = newKey.split('|');
+      var removedIds = oldIds.filter(function(id){ return newIds.indexOf(id) === -1; });
+      var addedIds = newIds.filter(function(id){ return oldIds.indexOf(id) === -1; });
+      var keptIds = newIds.filter(function(id){ return oldIds.indexOf(id) !== -1; });
+
+      // Anima saída só dos cards que vão sair
+      if (removedIds.length > 0 && oldKey !== '') {
+        removedIds.forEach(function(id) {
+          var el = container.querySelector('[data-card-id="' + id + '"]');
+          if (el) {
+            el.style.transition = 'opacity .3s ease, transform .3s ease, max-height .3s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-8px) scale(.95)';
+            el.style.maxHeight = '0';
+            el.style.overflow = 'hidden';
+            el.style.padding = '0 14px';
+            el.style.margin = '0';
+          }
         });
-        setTimeout(function() { renderCards(container, cards, btn); }, 320);
+        setTimeout(function() {
+          lastCardsKey = newKey;
+          renderCards(container, cards, btn);
+        }, 320);
       } else {
+        lastCardsKey = newKey;
         renderCards(container, cards, btn);
       }
     } else {
