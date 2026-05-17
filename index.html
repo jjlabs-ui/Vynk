@@ -727,26 +727,37 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         var nameEl = el.querySelector('[data-name]');
         var detailEl = el.querySelector('[data-detail]');
         var stateEl = el.querySelector('[data-state]');
-        var progressEl = el.querySelector('[data-progress]');
-        var elapsedEl = el.querySelector('[data-elapsed]');
-        var imgEl = el.querySelector('img');
-        if (nameEl) nameEl.textContent = card.name;
-        if (detailEl) detailEl.textContent = card.detail || '';
-        if (stateEl) stateEl.textContent = card.state || '';
-        if (progressEl && card.isSpotify) {
-          progressEl.style.width = card.progress + '%';
-          progressEl.setAttribute('data-start', card.startTs);
-          progressEl.setAttribute('data-end', card.endTs);
-        }
-        if (elapsedEl && card.isSpotify) {
-          var m = Math.floor(card.elapsed / 60);
-          var s = card.elapsed % 60;
-          elapsedEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-        }
-        if (imgEl && card.img && !card.img.startsWith('__FETCH__') && imgEl.src !== card.img) {
-          imgEl.style.transition = 'opacity .3s';
-          imgEl.style.opacity = '0';
-          setTimeout(function(img, url){ return function(){ img.src = url; img.style.opacity = '1'; }; }(imgEl, card.img), 150);
+        if (nameEl && nameEl.textContent !== card.name) nameEl.textContent = card.name;
+        if (detailEl && detailEl.textContent !== (card.detail || '')) detailEl.textContent = card.detail || '';
+        if (stateEl && stateEl.textContent !== (card.state || '')) stateEl.textContent = card.state || '';
+        // Spotify: atualiza timestamps, barra, tempo e imagem
+        if (card.isSpotify) {
+          var progressEl = el.querySelector('[data-progress]');
+          var elapsedEl = el.querySelector('[data-elapsed]');
+          var durationEl = el.querySelectorAll('span');
+          var imgEl = el.querySelector('img');
+          if (progressEl) {
+            progressEl.setAttribute('data-start', card.startTs);
+            progressEl.setAttribute('data-end', card.endTs);
+            progressEl.style.width = card.progress + '%';
+          }
+          if (elapsedEl) {
+            var m = Math.floor(card.elapsed / 60);
+            var s = card.elapsed % 60;
+            elapsedEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+          }
+          // Atualiza duração total (último span com min-width:32px e text-align:right)
+          var durSpan = el.querySelector('span[style*="text-align:right"]') || (durationEl.length > 0 ? durationEl[durationEl.length - 1] : null);
+          if (durSpan && card.duration) {
+            var dm = Math.floor(card.duration / 60);
+            var ds = card.duration % 60;
+            durSpan.textContent = (dm < 10 ? '0' : '') + dm + ':' + (ds < 10 ? '0' : '') + ds;
+          }
+          if (imgEl && card.img && imgEl.src !== card.img) {
+            imgEl.style.transition = 'opacity .3s';
+            imgEl.style.opacity = '0';
+            setTimeout(function(img, url){ return function(){ img.src = url; img.style.opacity = '1'; }; }(imgEl, card.img), 150);
+          }
         }
       }
     }
