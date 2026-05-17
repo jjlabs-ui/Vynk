@@ -674,34 +674,36 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     if (wrap) wrap.style.display = 'block';
 
     if (needsRebuild) {
-      // Descobre quais cards saíram e quais entraram
-      var oldIds = oldKey ? oldKey.split('|') : [];
-      var newIds = newKey.split('|');
-      var removedIds = oldIds.filter(function(id){ return newIds.indexOf(id) === -1; });
-      var addedIds = newIds.filter(function(id){ return oldIds.indexOf(id) === -1; });
-      var keptIds = newIds.filter(function(id){ return oldIds.indexOf(id) !== -1; });
-
-      // Anima saída só dos cards que vão sair
-      if (removedIds.length > 0 && oldKey !== '') {
-        removedIds.forEach(function(id) {
-          var el = container.querySelector('[data-card-id="' + id + '"]');
-          if (el) {
-            el.style.transition = 'opacity .3s ease, transform .3s ease, max-height .3s ease';
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(-8px) scale(.95)';
-            el.style.maxHeight = '0';
-            el.style.overflow = 'hidden';
-            el.style.padding = '0 14px';
-            el.style.margin = '0';
-          }
-        });
-        setTimeout(function() {
-          lastCardsKey = newKey;
-          renderCards(container, cards, btn);
-        }, 320);
-      } else {
+      // Se tá fechado, reconstrói direto sem animação (cards secundários já vão com act-hidden)
+      if (!actExpanded) {
         lastCardsKey = newKey;
         renderCards(container, cards, btn);
+      } else {
+        // Tá aberto — anima saída só dos cards que vão sair
+        var oldIds = oldKey ? oldKey.split('|') : [];
+        var newIds = newKey.split('|');
+        var removedIds = oldIds.filter(function(id){ return newIds.indexOf(id) === -1; });
+
+        if (removedIds.length > 0 && oldKey !== '') {
+          removedIds.forEach(function(id) {
+            var el = container.querySelector('[data-card-id="' + id + '"]');
+            if (el) {
+              el.style.transition = 'opacity .3s ease, transform .3s ease, max-height .3s ease';
+              el.style.opacity = '0';
+              el.style.transform = 'translateY(-8px) scale(.95)';
+              el.style.maxHeight = '0';
+              el.style.overflow = 'hidden';
+              el.style.padding = '0 14px';
+            }
+          });
+          setTimeout(function() {
+            lastCardsKey = newKey;
+            renderCards(container, cards, btn);
+          }, 320);
+        } else {
+          lastCardsKey = newKey;
+          renderCards(container, cards, btn);
+        }
       }
     } else {
       // Só atualiza textos e progresso sem reconstruir DOM
