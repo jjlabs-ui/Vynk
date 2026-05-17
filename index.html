@@ -538,7 +538,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           c.style.paddingTop = '10px';
           c.style.paddingBottom = '10px';
           c.style.marginTop = '';
-          c.style.borderColor = '';
+          c.style.borderColor = c.getAttribute('data-border') || '';
           c.style.overflow = '';
         }, i * 120);
       });
@@ -798,6 +798,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? '' : ' act-hidden') : '');
         div.style.background = card.color.bg;
         div.style.border = '1px solid ' + card.color.border;
+        div.setAttribute('data-border', card.color.border);
         div.style.opacity = '0';
         div.style.transform = 'translateY(10px) scale(.95)';
         div.setAttribute('data-card-id', card.id);
