@@ -477,7 +477,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     }
     .act-card.act-secondary-card.act-hidden{
       max-height:0;opacity:0;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;
-      border-color:transparent;
+      border-color:transparent;border-width:0;
       transform:translateY(-20px);
       pointer-events:none;
     }
@@ -526,6 +526,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         c.style.paddingBottom = '0';
         c.style.marginTop = '0';
         c.style.borderColor = 'transparent';
+        c.style.borderWidth = '0';
         c.style.overflow = 'hidden';
         // Força reflow
         c.offsetHeight;
@@ -539,6 +540,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           c.style.paddingBottom = '10px';
           c.style.marginTop = '';
           c.style.borderColor = c.getAttribute('data-border') || '';
+          c.style.borderWidth = '1px';
           c.style.overflow = '';
         }, i * 120);
       });
@@ -558,6 +560,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           c.style.paddingTop = '0';
           c.style.paddingBottom = '0';
           c.style.borderColor = 'transparent';
+          c.style.borderWidth = '0';
           c.style.overflow = 'hidden';
           // Depois da animação, adiciona a classe
           setTimeout(function(){
