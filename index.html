@@ -89,8 +89,8 @@ body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;
 .badge-svg:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .tags-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.tag{display:inline-flex;align-items:center;border-radius:20px;padding:4px 16px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;transition:border .8s,color .8s,background .8s;cursor:default;position:relative;overflow:hidden}
-.tag::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(128,128,128,.12),transparent);animation:tagShimmer 3.5s ease-in-out infinite}
+.tag{display:inline-flex;align-items:center;border-radius:0;padding:4px 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:color .8s;cursor:default;position:relative;overflow:hidden;border:none;background:none;color:rgba(255,255,255,.45);font-weight:500}
+.tag::after{display:none}
 @keyframes tagShimmer{0%{left:-100%}50%,100%{left:150%}}
 
 .bio{font-size:12.5px;text-align:center;line-height:1.8;font-style:italic;max-width:300px;transition:color 1s;letter-spacing:.2px}
@@ -393,7 +393,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
   </div>
 
   <div class="tags-row">
-    <span class="tag" id="mainTag">Full Stack</span>
+    <span class="tag" id="mainTag">Programador</span>
   </div>
 
   <p class="bio" id="mainBio"></p>
@@ -941,7 +941,7 @@ var T = {
     videoOp:'.14', particleR:255, particleG:255, particleB:255,
     rippleColor:'rgba(255,255,255,.06)',
     bio:'',
-    tag:'Full Stack',
+    tag:'Programador',
     avatar:'/perdilsite.png', discordAvatar:'/perfildiscord.png',
     eqColor:'rgba(255,255,255,.4)',
   }
