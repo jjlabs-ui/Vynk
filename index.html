@@ -626,7 +626,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         pct = Math.min(100, (spElapsed / spDuration) * 100);
       }
       cards.push({
-        id: 'spotify_' + (sp.track_id || ''),
+        id: 'spotify',
         priority: 3,
         name: sp.song || '',
         detail: sp.artist || '',
@@ -706,7 +706,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         }
       }
     } else {
-      // Só atualiza textos e progresso sem reconstruir DOM
+      // Só atualiza textos, imagem e progresso sem reconstruir DOM
       for (var c = 0; c < cards.length; c++) {
         var card = cards[c];
         var el = container.querySelector('[data-card-id="' + card.id + '"]');
@@ -715,10 +715,26 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         var detailEl = el.querySelector('[data-detail]');
         var stateEl = el.querySelector('[data-state]');
         var progressEl = el.querySelector('[data-progress]');
+        var elapsedEl = el.querySelector('[data-elapsed]');
+        var imgEl = el.querySelector('img');
         if (nameEl) nameEl.textContent = card.name;
         if (detailEl) detailEl.textContent = card.detail || '';
         if (stateEl) stateEl.textContent = card.state || '';
-        if (progressEl && card.isSpotify) progressEl.style.width = card.progress + '%';
+        if (progressEl && card.isSpotify) {
+          progressEl.style.width = card.progress + '%';
+          progressEl.setAttribute('data-start', card.startTs);
+          progressEl.setAttribute('data-end', card.endTs);
+        }
+        if (elapsedEl && card.isSpotify) {
+          var m = Math.floor(card.elapsed / 60);
+          var s = card.elapsed % 60;
+          elapsedEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        }
+        if (imgEl && card.img && !card.img.startsWith('__FETCH__') && imgEl.src !== card.img) {
+          imgEl.style.transition = 'opacity .3s';
+          imgEl.style.opacity = '0';
+          setTimeout(function(img, url){ return function(){ img.src = url; img.style.opacity = '1'; }; }(imgEl, card.img), 150);
+        }
       }
     }
 
