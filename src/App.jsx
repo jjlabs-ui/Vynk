@@ -12,7 +12,6 @@ const CONFIG = {
   tags: ['dev', 'noturno'],
   badges: ['⭐', '🎮', '🔥', '💀'],
   socials: [
-    { icon: 'github',    label: 'GitHub',    href: 'https://github.com/seuuser' },
     { icon: 'discord',   label: 'Discord',   href: 'https://discord.gg/seuservidor' },
     { icon: 'twitter',   label: 'Twitter',   href: 'https://twitter.com/seuuser' },
     { icon: 'instagram', label: 'Instagram', href: 'https://instagram.com/seuuser' },
