@@ -607,22 +607,26 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     var editorApps = ['Visual Studio Code', 'IntelliJ IDEA', 'WebStorm', 'Sublime Text', 'Neovim', 'Cursor'];
 
     // 1. Coletar atividades tipo 0 (jogos/apps) — sem duplicatas
-    var seenNames = {};
+    var seenNames = [];
     if (data.activities) {
       for (var i = 0; i < data.activities.length; i++) {
         var act = data.activities[i];
         if (act.type === 0) {
-          // Pula duplicatas pelo nome (mantém a que tem mais info)
           var actName = act.name || '';
-          if (seenNames[actName]) {
-            // Se a nova tem assets e a anterior não, substitui
-            if (act.assets && act.assets.large_image && !seenNames[actName].hasImage) {
-              cards = cards.filter(function(c){ return c.name !== actName; });
-            } else {
-              continue;
+          // Normaliza nome pra comparação (remove ®, ™, :, espaços extras)
+          var normalized = actName.replace(/[®™:©]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+          
+          // Verifica se já tem um card similar
+          var isDuplicate = false;
+          for (var s = 0; s < seenNames.length; s++) {
+            // Se um nome contém o outro ou são muito parecidos
+            if (seenNames[s].indexOf(normalized) !== -1 || normalized.indexOf(seenNames[s]) !== -1) {
+              isDuplicate = true;
+              break;
             }
           }
-          seenNames[actName] = { hasImage: !!(act.assets && act.assets.large_image) };
+          if (isDuplicate) continue;
+          seenNames.push(normalized);
 
           var isEditor = editorApps.some(function(e){ return actName.indexOf(e) !== -1; });
           var priority = isEditor ? 2 : 1;
