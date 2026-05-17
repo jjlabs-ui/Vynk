@@ -1406,6 +1406,9 @@ card.addEventListener('mouseleave',function(){
       var avatarUrl = 'https://cdn.discordapp.com/avatars/' + DISCORD_ID + '/' + data.discord_user.avatar + '.' + ext + '?size=256';
       if (avatarEl) avatarEl.src = avatarUrl;
       if (mainAvatarEl) mainAvatarEl.src = avatarUrl;
+      // Update favicon to match Discord avatar
+      var favicon = document.querySelector('link[rel="icon"]');
+      if (favicon) favicon.href = avatarUrl;
     }
 
     // Username
