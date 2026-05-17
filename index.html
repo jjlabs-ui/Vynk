@@ -516,21 +516,26 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       expandBtn.classList.remove('hint');
       // Abre com delay escalonado
       cards.forEach(function(c, i){
-        setTimeout(function(){ c.classList.remove('act-hidden'); }, i * 80);
+        setTimeout(function(){
+          c.classList.remove('act-hidden');
+        }, i * 100);
       });
       actAutoTimer = setTimeout(function(){
         if(actExpanded) toggleActivities();
       }, 15000);
     } else {
       chevron.classList.remove('up');
-      // Fecha com delay escalonado reverso
+      // Fecha com delay escalonado reverso (último fecha primeiro)
       var total = cards.length;
       cards.forEach(function(c, i){
-        setTimeout(function(){ c.classList.add('act-hidden'); }, (total - 1 - i) * 80);
+        var delay = (total - 1 - i) * 100;
+        setTimeout(function(){
+          c.classList.add('act-hidden');
+        }, delay);
       });
       setTimeout(function(){
         expandBtn.classList.add('hint');
-      }, total * 80 + 200);
+      }, total * 100 + 300);
     }
   }
 
@@ -621,7 +626,7 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       var spDuration = 0;
       if (sp.timestamps) {
         var now = Date.now();
-        spElapsed = Math.floor((now - sp.timestamps.start) / 1000);
+        spElapsed = Math.min(Math.floor((now - sp.timestamps.start) / 1000), Math.floor((sp.timestamps.end - sp.timestamps.start) / 1000));
         spDuration = Math.floor((sp.timestamps.end - sp.timestamps.start) / 1000);
         pct = Math.min(100, (spElapsed / spDuration) * 100);
       }
@@ -1470,8 +1475,9 @@ card.addEventListener('mouseleave',function(){
     var end = parseInt(bar.getAttribute('data-end'));
     if (!start || !end) return;
     var now = Date.now();
-    var elapsed = Math.floor((now - start) / 1000);
     var duration = Math.floor((end - start) / 1000);
+    var elapsed = Math.min(Math.floor((now - start) / 1000), duration);
+    if (elapsed < 0) elapsed = 0;
     var pct = Math.min(100, (elapsed / duration) * 100);
     bar.style.width = pct + '%';
     // Atualiza o tempo
