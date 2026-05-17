@@ -471,23 +471,15 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       transition:all .4s cubic-bezier(.4,0,.2,1);
       transform-origin:top center;
     }
-    .act-card.act-hidden{
-      max-height:0 !important;opacity:0 !important;padding-top:0 !important;padding-bottom:0 !important;margin-top:0 !important;margin-bottom:0 !important;
-      border-color:transparent !important;overflow:hidden;
+    .act-card.act-secondary-card{
+      overflow:hidden;
+      max-height:150px;
+    }
+    .act-card.act-secondary-card.act-hidden{
+      max-height:0;opacity:0;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;
+      border-color:transparent;
       transform:translateY(-20px);
       pointer-events:none;
-    }
-    .act-card.act-secondary-card{
-      transition:max-height .45s cubic-bezier(.4,0,.2,1),
-                opacity .35s ease,
-                padding-top .45s cubic-bezier(.4,0,.2,1),
-                padding-bottom .45s cubic-bezier(.4,0,.2,1),
-                margin-top .35s ease,
-                margin-bottom .35s ease,
-                transform .4s cubic-bezier(.4,0,.2,1),
-                border-color .3s ease;
-      max-height:150px;
-      overflow:hidden;
     }
     #actExpandBtn:hover{opacity:.7;}
     #actChevron.up{transform:rotate(180deg);}
@@ -522,28 +514,60 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     if(actExpanded){
       chevron.classList.add('up');
       expandBtn.classList.remove('hint');
-      // Abre com delay escalonado
       cards.forEach(function(c, i){
+        // Remove hidden class primeiro
+        c.classList.remove('act-hidden');
+        // Força estado inicial
+        c.style.transition = 'none';
+        c.style.opacity = '0';
+        c.style.maxHeight = '0';
+        c.style.transform = 'translateY(-20px)';
+        c.style.paddingTop = '0';
+        c.style.paddingBottom = '0';
+        c.style.marginTop = '0';
+        c.style.borderColor = 'transparent';
+        c.style.overflow = 'hidden';
+        // Força reflow
+        c.offsetHeight;
+        // Anima pra estado final com delay
         setTimeout(function(){
-          c.classList.remove('act-hidden');
-        }, i * 100);
+          c.style.transition = 'all .4s cubic-bezier(.25,.46,.45,.94)';
+          c.style.opacity = '1';
+          c.style.maxHeight = '150px';
+          c.style.transform = 'translateY(0)';
+          c.style.paddingTop = '10px';
+          c.style.paddingBottom = '10px';
+          c.style.marginTop = '';
+          c.style.borderColor = '';
+          c.style.overflow = '';
+        }, i * 120);
       });
       actAutoTimer = setTimeout(function(){
         if(actExpanded) toggleActivities();
       }, 15000);
     } else {
       chevron.classList.remove('up');
-      // Fecha com delay escalonado reverso (último fecha primeiro)
       var total = cards.length;
       cards.forEach(function(c, i){
-        var delay = (total - 1 - i) * 100;
+        var delay = (total - 1 - i) * 120;
         setTimeout(function(){
-          c.classList.add('act-hidden');
+          c.style.transition = 'all .35s cubic-bezier(.55,.06,.68,.19)';
+          c.style.opacity = '0';
+          c.style.maxHeight = '0';
+          c.style.transform = 'translateY(-20px)';
+          c.style.paddingTop = '0';
+          c.style.paddingBottom = '0';
+          c.style.borderColor = 'transparent';
+          c.style.overflow = 'hidden';
+          // Depois da animação, adiciona a classe
+          setTimeout(function(){
+            c.classList.add('act-hidden');
+          }, 350);
         }, delay);
       });
       setTimeout(function(){
         expandBtn.classList.add('hint');
-      }, total * 100 + 300);
+      }, total * 120 + 400);
     }
   }
 
