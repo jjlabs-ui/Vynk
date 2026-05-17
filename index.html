@@ -472,14 +472,22 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       transform-origin:top center;
     }
     .act-card.act-hidden{
-      max-height:0 !important;opacity:0 !important;padding-top:0 !important;padding-bottom:0 !important;margin:0 !important;
-      border-color:transparent !important;overflow:hidden !important;
-      transform:translateY(-6px) !important;
+      max-height:0;opacity:0;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;
+      border-color:transparent;overflow:hidden;
+      transform:translateY(-6px);
       pointer-events:none;
     }
     .act-card.act-secondary-card{
-      transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease,margin .3s ease,transform .3s ease,border-color .3s ease;
+      transition:max-height .4s cubic-bezier(.4,0,.2,1),
+                opacity .3s ease,
+                padding-top .4s cubic-bezier(.4,0,.2,1),
+                padding-bottom .4s cubic-bezier(.4,0,.2,1),
+                margin-top .3s ease,
+                margin-bottom .3s ease,
+                transform .3s ease,
+                border-color .3s ease;
       max-height:150px;
+      overflow:hidden;
     }
     #actExpandBtn:hover{opacity:.7;}
     #actChevron.up{transform:rotate(180deg);}
