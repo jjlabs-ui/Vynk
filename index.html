@@ -393,29 +393,8 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
   </div>
 
   <div class="tags-row">
-    <span class="tag" id="mainTag">Software Engineer</span>
+    <span class="tag" id="mainTag">Full Stack</span>
   </div>
-
-<script>
-(function(){
-  var tagEl=document.getElementById('mainTag');
-  var tags=['Software Engineer','Backend Dev','Frontend Dev'];
-  var tIdx=0;
-  tagEl.style.transition='opacity .4s ease, transform .4s ease';
-  setInterval(function(){
-    tagEl.style.opacity='0';
-    tagEl.style.transform='translateY(-4px)';
-    setTimeout(function(){
-      tIdx=(tIdx+1)%tags.length;
-      tagEl.textContent=tags[tIdx];
-      tagEl.style.transform='translateY(4px)';
-      void tagEl.offsetWidth;
-      tagEl.style.opacity='1';
-      tagEl.style.transform='translateY(0)';
-    },400);
-  },3500);
-})();
-</script>
 
   <p class="bio" id="mainBio"></p>
 
@@ -961,8 +940,8 @@ var T = {
     cursorBg:'#fff', ringBorder:'rgba(255,255,255,.4)',
     videoOp:'.14', particleR:255, particleG:255, particleB:255,
     rippleColor:'rgba(255,255,255,.06)',
-    bio:'quanto mais alto, mais visado — e eu to voando.',
-    tag:'Software Engineer',
+    bio:'',
+    tag:'Full Stack',
     avatar:'/perdilsite.png', discordAvatar:'/perfildiscord.png',
     eqColor:'rgba(255,255,255,.4)',
   }
@@ -1135,14 +1114,6 @@ document.addEventListener('click',function(e){
   r.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(e.clientX-size/2)+'px;top:'+(e.clientY-size/2)+'px;background:'+window._rippleColor;
   document.body.appendChild(r);setTimeout(function(){r.remove()},700);
 });
-
-// ── Bio fixa com animação de glow ─────────────────────────
-var bioEl=document.getElementById('mainBio');
-bioEl.textContent='quanto mais alto, mais visado.';
-bioEl.style.animation='bioGlow 3s ease-in-out infinite';
-var bioGlowStyle=document.createElement('style');
-bioGlowStyle.textContent='@keyframes bioGlow{0%,100%{opacity:.4;text-shadow:none;}50%{opacity:.8;text-shadow:0 0 8px rgba(255,255,255,.15);}}';
-document.head.appendChild(bioGlowStyle);
 
 // ── Views counter (sempre incrementa ao entrar) ──────────
 (function(){
