@@ -1477,7 +1477,9 @@ card.addEventListener('mouseleave',function(){
 
   // Spotify progress updater — atualiza barra e tempo a cada segundo localmente
   setInterval(function() {
-    var bar = document.querySelector('[data-progress]');
+    var spotifyCard = document.querySelector('[data-card-id="spotify"]');
+    if (!spotifyCard) return;
+    var bar = spotifyCard.querySelector('[data-progress]');
     if (!bar) return;
     var start = parseInt(bar.getAttribute('data-start'));
     var end = parseInt(bar.getAttribute('data-end'));
@@ -1488,8 +1490,7 @@ card.addEventListener('mouseleave',function(){
     if (elapsed < 0) elapsed = 0;
     var pct = Math.min(100, (elapsed / duration) * 100);
     bar.style.width = pct + '%';
-    // Atualiza o tempo
-    var elapsedEl = bar.closest('.act-card') && bar.closest('.act-card').querySelector('[data-elapsed]');
+    var elapsedEl = spotifyCard.querySelector('[data-elapsed]');
     if (elapsedEl) {
       var m = Math.floor(elapsed / 60);
       var s = elapsed % 60;
