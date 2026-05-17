@@ -800,8 +800,12 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
         var div = document.createElement('div');
         div.className = 'act-card' + (c > 0 ? ' act-secondary-card' + (actExpanded ? '' : ' act-hidden') : '');
         div.style.background = card.color.bg;
-        div.style.border = '1px solid ' + card.color.border;
         div.setAttribute('data-border', card.color.border);
+        if (c === 0 || actExpanded) {
+          div.style.border = '1px solid ' + card.color.border;
+        } else {
+          div.style.border = '0 solid transparent';
+        }
         div.style.opacity = '0';
         div.style.transform = 'translateY(10px) scale(.95)';
         div.setAttribute('data-card-id', card.id);
