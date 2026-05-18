@@ -1205,10 +1205,27 @@ var eqBars   = document.querySelectorAll('.eq-bar');
 function fmt(s){var m=Math.floor(s/60),sec=Math.floor(s%60);return(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;}
 function setEq(on){eqBars.forEach(function(b){b.classList.toggle('playing',on)});}
 function fetchCover(title,artist,cb){
-  fetch('https://itunes.apple.com/search?term='+encodeURIComponent(title+' '+artist)+'&media=music&limit=1')
+  // Tenta Deezer primeiro (melhor cobertura BR)
+  fetch('https://api.deezer.com/search?q='+encodeURIComponent(artist+' '+title)+'&limit=1')
     .then(function(r){return r.json()})
-    .then(function(d){if(d.results&&d.results.length>0)cb(d.results[0].artworkUrl100.replace('100x100','300x300'));})
-    .catch(function(){});
+    .then(function(d){
+      if(d.data&&d.data.length>0&&d.data[0].album&&d.data[0].album.cover_medium){
+        cb(d.data[0].album.cover_medium);
+      } else {
+        // Fallback: iTunes
+        fetch('https://itunes.apple.com/search?term='+encodeURIComponent(title+' '+artist)+'&media=music&limit=1')
+          .then(function(r){return r.json()})
+          .then(function(d){if(d.results&&d.results.length>0)cb(d.results[0].artworkUrl100.replace('100x100','300x300'));})
+          .catch(function(){});
+      }
+    })
+    .catch(function(){
+      // Fallback: iTunes
+      fetch('https://itunes.apple.com/search?term='+encodeURIComponent(title+' '+artist)+'&media=music&limit=1')
+        .then(function(r){return r.json()})
+        .then(function(d){if(d.results&&d.results.length>0)cb(d.results[0].artworkUrl100.replace('100x100','300x300'));})
+        .catch(function(){});
+    });
 }
 
 // ── Web Audio Analyser ────────────────────────────────────
