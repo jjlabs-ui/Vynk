@@ -576,7 +576,10 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
       'EA FC': {bg:'rgba(0,100,0,.08)',border:'rgba(0,150,0,.2)',label:'#009600'},
     };
 
-    var editorApps = ['Visual Studio Code', 'IntelliJ IDEA', 'WebStorm', 'Sublime Text', 'Neovim', 'Cursor'];
+    var editorApps = ['Visual Studio Code', 'Visual Studio', 'IntelliJ IDEA', 'WebStorm', 'Sublime Text', 'Neovim', 'Cursor', 'Code', 'VSCode', 'VS Code'];
+
+    // Lista de jogos conhecidos pra garantir prioridade máxima
+    var knownGames = ['VALORANT', 'League of Legends', 'Counter-Strike', 'Minecraft', 'Fortnite', 'GTA', 'Dead by Daylight', 'Roblox', 'Apex Legends', 'Overwatch', 'Call of Duty', 'Black Ops', 'Warzone', 'Rainbow Six', 'Rocket League', 'FIFA', 'EA FC', 'Dota', 'Rust', 'ARK', 'Terraria', 'Among Us', 'Fall Guys', 'Genshin', 'Honkai'];
 
     // 1. Coletar atividades tipo 0 (jogos/apps) — sem duplicatas
     var seenNames = [];
@@ -600,8 +603,10 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
           if (isDuplicate) continue;
           seenNames.push(normalized);
 
-          var isEditor = editorApps.some(function(e){ return actName.indexOf(e) !== -1; });
-          var priority = isEditor ? 2 : 1;
+          var isEditor = editorApps.some(function(e){ return actName.toLowerCase().indexOf(e.toLowerCase()) !== -1; });
+          var isKnownGame = knownGames.some(function(g){ return actName.toLowerCase().indexOf(g.toLowerCase()) !== -1; });
+          // Jogo conhecido = prioridade 1 (sempre visível), editor = 2, outro app = 1
+          var priority = isKnownGame ? 1 : (isEditor ? 2 : 1);
 
           // Imagem
           var imgUrl = '';
