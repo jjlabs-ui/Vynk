@@ -1145,11 +1145,11 @@ document.addEventListener('click',function(e){
 
 // ── Audio playlist ────────────────────────────────────────
 var playlist=[
-  {src:'/2. DROPO, zTokyo - Memórias.mp3',                          title:'Memórias',         artist:'DROPO, zTokyo'   },
-  {src:'/2. Dudu x Leozin - Tudo acaba (Prod. Ecologyk).mp3',       title:'Tudo Acaba',       artist:'Dudu x Leozin'   },
-  {src:'/lilgiela33 - Mesma Pessoa (prod. peedzh).mp3',              title:'Mesma Pessoa',     artist:'lilgiela33'      },
-  {src:'/lilgiela33 - Pixei a casa (Áudio Oficial).mp3',             title:'Pixei a Casa',     artist:'lilgiela33'      },
-  {src:'/Nosred - eu amo a hello kitty ✧˚🎀.mp3',                    title:'Eu Amo a Hello Kitty', artist:'Nosred'      }
+  {src:'/2. DROPO, zTokyo - Memórias.mp3',                          title:'Memórias',         artist:'DROPO, zTokyo',   cover:'https://cdn-images.dzcdn.net/images/cover/440a79a0e4d7d1d60e7f5d7ef2bd6c1f/250x250-000000-80-0-0.jpg' },
+  {src:'/2. Dudu x Leozin - Tudo acaba (Prod. Ecologyk).mp3',       title:'Tudo Acaba',       artist:'Dudu x Leozin',   cover:'https://cdn-images.dzcdn.net/images/cover/070c38c828cfdb9020cec145aff21fef/250x250-000000-80-0-0.jpg' },
+  {src:'/lilgiela33 - Mesma Pessoa (prod. peedzh).mp3',              title:'Mesma Pessoa',     artist:'lilgiela33',      cover:'https://cdn-images.dzcdn.net/images/cover/2eeba4f412a69a85d56a43f2944d13b8/250x250-000000-80-0-0.jpg' },
+  {src:'/lilgiela33 - Pixei a casa (Áudio Oficial).mp3',             title:'Pixei a Casa',     artist:'lilgiela33',      cover:'https://cdn-images.dzcdn.net/images/cover/2eeba4f412a69a85d56a43f2944d13b8/250x250-000000-80-0-0.jpg' },
+  {src:'/Nosred - eu amo a hello kitty ✧˚🎀.mp3',                    title:'Eu Amo a Hello Kitty', artist:'Nosred',      cover:'https://cdn-images.dzcdn.net/images/cover/9e10d6acfd1bcb86b4bb75f781d063c8/250x250-000000-80-0-0.jpg' }
 ];
 playlist.sort(function(){return Math.random()-.5});
 var trackIdx=0,audio=new Audio();audio.volume=0.05;
@@ -1298,7 +1298,7 @@ function loadTrack(idx){
   if(mpCur)mpCur.textContent='00:00';
   if(mpFill)mpFill.style.width='0%';
   if(mpThumb)mpThumb.style.left='0%';
-  if(mpCover)fetchCover(t.title,t.artist,function(url){mpCover.src=url;});
+  if(mpCover && t.cover) mpCover.src = t.cover;
 }
 
 function playTrack(){
