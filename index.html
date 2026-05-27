@@ -868,9 +868,21 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
 
       var imgHtml = '';
       if (card.img && card.img.startsWith('__FETCH__')) {
-        imgHtml = '<img data-fetch-icon="' + card.appId + '" src="" style="width:54px;height:54px;border-radius:12px;object-fit:cover;flex-shrink:0;display:none;" />';
+        // Mostra placeholder imediatamente com a inicial
+        var initial = (card.name || '?').charAt(0).toUpperCase();
+        var canvas = document.createElement('canvas');
+        canvas.width = 54; canvas.height = 54;
+        var ctx0 = canvas.getContext('2d');
+        ctx0.fillStyle = card.color.bg.replace(',.08)', ',.35)').replace(',.06)', ',.35)');
+        if (ctx0.roundRect) { ctx0.beginPath(); ctx0.roundRect(0,0,54,54,12); ctx0.fill(); }
+        else { ctx0.fillRect(0,0,54,54); }
+        ctx0.fillStyle = card.color.label || 'rgba(255,255,255,0.7)';
+        ctx0.font = 'bold 24px Inter, sans-serif';
+        ctx0.textAlign = 'center'; ctx0.textBaseline = 'middle';
+        ctx0.fillText(initial, 27, 27);
+        imgHtml = '<img data-fetch-icon="' + card.appId + '" src="' + canvas.toDataURL() + '" style="width:54px;height:54px;border-radius:12px;object-fit:cover;flex-shrink:0;" />';
       } else if (card.img) {
-        imgHtml = '<img src="' + card.img + '" style="width:54px;height:54px;border-radius:12px;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\'" />';
+        imgHtml = '<img src="' + card.img + '" style="width:54px;height:54px;border-radius:12px;object-fit:cover;flex-shrink:0;" onerror="this.style.opacity=\'0.3\'" />';
       }
 
       var progressHtml = '';
@@ -908,15 +920,16 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
         var tried = 0;
 
         function tryFetchIcon(id, el) {
-          // Tentativa 1: API RPC do Discord
           fetch('https://discord.com/api/v10/applications/' + id + '/rpc')
             .then(function(r) { return r.json(); })
             .then(function(app) {
               if (app.icon) {
                 var url = 'https://cdn.discordapp.com/app-icons/' + id + '/' + app.icon + '.png?size=128';
                 cachedIconUrls[id] = url;
-                el.src = url;
-                el.style.display = 'block';
+                var tmp = new Image();
+                tmp.onload = function() { el.src = url; };
+                tmp.onerror = function() { tryFallback(id, el); };
+                tmp.src = url;
               } else {
                 tryFallback(id, el);
               }
@@ -924,36 +937,15 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
         }
 
         function tryFallback(id, el) {
-          // Tentativa 2: CDN direto sem /rpc
           var url2 = 'https://cdn.discordapp.com/app-icons/' + id + '/icon.png?size=128';
           var img2 = new Image();
-          img2.onload = function() {
-            cachedIconUrls[id] = url2;
-            el.src = url2;
-            el.style.display = 'block';
-          };
-          img2.onerror = function() {
-            // Tentativa 3: placeholder gerado com inicial do app
-            var name = el.closest('[data-card-id]') ? (el.closest('[data-card-id]').querySelector('[data-name]') || {}).textContent || '?' : '?';
-            var initial = name.charAt(0).toUpperCase();
-            var canvas = document.createElement('canvas');
-            canvas.width = 54; canvas.height = 54;
-            var ctx2 = canvas.getContext('2d');
-            ctx2.fillStyle = 'rgba(88,101,242,0.3)';
-            ctx2.beginPath(); ctx2.roundRect(0,0,54,54,12); ctx2.fill();
-            ctx2.fillStyle = 'rgba(255,255,255,0.7)';
-            ctx2.font = 'bold 24px Inter, sans-serif';
-            ctx2.textAlign = 'center'; ctx2.textBaseline = 'middle';
-            ctx2.fillText(initial, 27, 27);
-            el.src = canvas.toDataURL();
-            el.style.display = 'block';
-          };
+          img2.onload = function() { cachedIconUrls[id] = url2; el.src = url2; };
+          img2.onerror = function() { /* mantém o placeholder */ };
           img2.src = url2;
         }
 
         if (cachedIconUrls[appId]) {
           fetchImg.src = cachedIconUrls[appId];
-          fetchImg.style.display = 'block';
         } else {
           tryFetchIcon(appId, fetchImg);
         }
