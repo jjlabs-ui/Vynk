@@ -335,8 +335,8 @@ export default function App() {
       <style>{CSS}</style>
       <div className="wrap">
 
-        <div className="views">
-          <Eye size={12} />
+        <div className="views-corner">
+          <Eye size={13} className="eye-icon" />
           <span>{views > 0 ? views.toLocaleString() : '–'}</span>
         </div>
 
@@ -404,11 +404,27 @@ const CSS = `
     gap: 16px; width: 100%; max-width: 400px;
     position: relative; padding-top: 8px;
   }
-  .views {
-    position: absolute; top: 0; right: 0;
-    display: flex; align-items: center; gap: 5px;
-    padding: 4px 10px; font-size: 11px;
-    color: rgba(255,255,255,0.35); letter-spacing: 0.3px;
+  .views-corner {
+    position:fixed; top:16px; right:16px; z-index:9999;
+    display:flex; align-items:center; gap:6px;
+    padding:6px 12px; font-size:12px; font-weight:500;
+    color:rgba(255,255,255,0.55); letter-spacing:0.4px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:6px;
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  }
+  .eye-icon {
+    animation: eyePulse 2.8s ease-in-out infinite;
+    flex-shrink:0;
+  }
+  @keyframes eyePulse {
+    0%,100% { transform:scaleY(1); opacity:0.55; }
+    45%     { transform:scaleY(1); opacity:0.55; }
+    50%     { transform:scaleY(0.1); opacity:0.3; }
+    55%     { transform:scaleY(1); opacity:0.55; }
+    60%     { transform:scaleY(0.85); opacity:0.45; }
+    65%     { transform:scaleY(1); opacity:0.55; }
   }
   .av-ring {
     width: 88px; height: 88px; border-radius: 50%; padding: 2px;
@@ -425,11 +441,11 @@ const CSS = `
   .badge:hover { transform:scale(1.35) translateY(-2px); opacity:1; }
   .tags { display:flex; gap:7px; flex-wrap:wrap; justify-content:center; }
   .tag {
-    border:1px solid rgba(255,255,255,0.14); border-radius:20px;
+    border:none; border-radius:20px;
     padding:3px 13px; font-size:11px; color:rgba(255,255,255,0.6);
-    background:rgba(255,255,255,0.03); transition:border-color 0.2s,color 0.2s;
+    background:rgba(255,255,255,0.03); transition:color 0.2s;
   }
-  .tag:hover { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.9); }
+  .tag:hover { color:rgba(255,255,255,0.9); }
   .bio {
     font-size:12.5px; color:rgba(255,255,255,0.38);
     text-align:center; max-width:260px; line-height:1.6; margin-top:-4px;
