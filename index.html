@@ -65,7 +65,7 @@ body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;
 .tilt-inner > *:nth-child(1){animation-delay:.1s}.tilt-inner > *:nth-child(2){animation-delay:.2s}.tilt-inner > *:nth-child(3){animation-delay:.3s}.tilt-inner > *:nth-child(4){animation-delay:.4s}.tilt-inner > *:nth-child(5){animation-delay:.5s}.tilt-inner > *:nth-child(6){animation-delay:.6s}.tilt-inner > *:nth-child(7){animation-delay:.7s}.tilt-inner > *:nth-child(8){animation-delay:.8s}.tilt-inner > *:nth-child(9){animation-delay:.9s}.tilt-inner > *:nth-child(10){animation-delay:1s}.tilt-inner > *:nth-child(11){animation-delay:1.1s}
 @keyframes itemIn{from{opacity:0;transform:translateZ(18px) translateY(14px)}to{opacity:1;transform:translateZ(18px) translateY(0)}}
 
-.views-badge{position:absolute;bottom:-8px;right:-16px;display:flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-size:10px;white-space:nowrap;backdrop-filter:blur(8px);z-index:10;transition:background .8s,color .8s,border-color .8s}
+.views-badge{position:absolute;top:14px;right:16px;display:flex;align-items:center;gap:5px;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:500;white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;transition:background .8s,color .8s,border-color .8s;letter-spacing:.2px;}
 .views-badge svg{transition:transform .3s ease,filter .3s ease;}
 .views-badge.pulse svg{animation:eyePulse .6s ease;filter:drop-shadow(0 0 6px rgba(255,255,255,.6));}
 @keyframes eyePulse{0%{transform:scale(1);}30%{transform:scale(1.5);}60%{transform:scale(0.9);}100%{transform:scale(1);}}
@@ -386,15 +386,17 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
 
 <div id="app">
 <div class="tilt-card" id="tiltCard">
+
+  <div class="views-badge" id="viewsBadge">
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    <span id="viewCount">0</span>
+  </div>
+
 <div class="tilt-inner">
 
   <div style="position:relative;display:inline-block;margin-top:24px;">
     <div class="avatar-ring" id="avatarRing">
       <img class="avatar" id="mainAvatar" src="" alt="avatar"/>
-    </div>
-    <div class="views-badge" id="viewsBadge">
-      <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span id="viewCount">0</span>
     </div>
   </div>
 
