@@ -329,7 +329,7 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
 <div id="cursor-ring"></div>
 <canvas id="particleCanvas"></canvas>
 <div style="position:fixed;inset:0;background:#000;z-index:0;pointer-events:none;"></div>
-<video id="bgVideo" autoplay muted loop playsinline style="opacity:.15;filter:grayscale(100%) brightness(0.4);">
+<video id="bgVideo" autoplay muted loop playsinline style="opacity:.35;filter:brightness(0.55) saturate(1.4);">
   <source src="/videoplayback.mp4" type="video/mp4"/>
 </video>
 
@@ -1050,7 +1050,7 @@ var T = {
     viewsBg:'transparent', viewsBorder:'rgba(255,255,255,.08)',
     splashBg:'#000', splashText:'rgba(255,255,255,.5)',
     cursorBg:'#fff', ringBorder:'rgba(255,255,255,.4)',
-    videoOp:'.14', particleR:255, particleG:255, particleB:255,
+    videoOp:'.35', particleR:255, particleG:255, particleB:255,
     rippleColor:'rgba(255,255,255,.06)',
     bio:'',
     tag:'Programador',
@@ -1112,6 +1112,7 @@ function applyTheme(m) {
   _set('cursor','color',t.cursorBg);
   _set('cursor-ring','border','1px solid '+t.ringBorder);
   _set('bgVideo','opacity',t.videoOp);
+  _set('bgVideo','filter','brightness(0.55) saturate(1.4)');
   _set('splash','background',t.splashBg);
   _set('splashHint','color',t.splashText);
   _set('mpPlay','background',t.playBg);
