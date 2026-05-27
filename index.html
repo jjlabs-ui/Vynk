@@ -281,7 +281,9 @@ body::after{display:none;}
 .mp-vol{display:flex;align-items:center;gap:6px;padding:0 2px;}
 .mp-vol svg{flex-shrink:0;color:rgba(255,255,255,.3);}
 input.mp-vol-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(255,255,255,.12);border-radius:99px;outline:none;cursor:none;}
-input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:none;box-shadow:0 0 5px rgba(255,255,255,.35);}
+input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:#fff;cursor:none;box-shadow:0 0 0 2px rgba(255,255,255,.15);transition:transform .15s;}
+input.mp-vol-slider::-webkit-slider-thumb:hover{transform:scale(1.3);}
+input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#fff;border:none;cursor:none;box-shadow:0 0 0 2px rgba(255,255,255,.15);}
 
 /* ── Server Tag Tooltip ── */
 .server-tag-wrap{position:relative;z-index:100;}
@@ -894,20 +896,62 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;hei
           progressHtml +
         '</div>';
 
-      // Fetch ícone se necessário
+      // Fetch ícone se necessário — múltiplos fallbacks
       var fetchImg = div.querySelector('[data-fetch-icon]');
       if (fetchImg) {
         var appId = fetchImg.getAttribute('data-fetch-icon');
-        fetch('https://discord.com/api/v10/applications/' + appId + '/rpc')
-          .then(function(r) { return r.json(); })
-          .then(function(app) {
-            if (app.icon) {
-              var url = 'https://cdn.discordapp.com/app-icons/' + appId + '/' + app.icon + '.png?size=128';
-              cachedIconUrls[appId] = url;
-              fetchImg.src = url;
-              fetchImg.style.display = 'block';
-            }
-          }).catch(function(){});
+        var tried = 0;
+
+        function tryFetchIcon(id, el) {
+          // Tentativa 1: API RPC do Discord
+          fetch('https://discord.com/api/v10/applications/' + id + '/rpc')
+            .then(function(r) { return r.json(); })
+            .then(function(app) {
+              if (app.icon) {
+                var url = 'https://cdn.discordapp.com/app-icons/' + id + '/' + app.icon + '.png?size=128';
+                cachedIconUrls[id] = url;
+                el.src = url;
+                el.style.display = 'block';
+              } else {
+                tryFallback(id, el);
+              }
+            }).catch(function(){ tryFallback(id, el); });
+        }
+
+        function tryFallback(id, el) {
+          // Tentativa 2: CDN direto sem /rpc
+          var url2 = 'https://cdn.discordapp.com/app-icons/' + id + '/icon.png?size=128';
+          var img2 = new Image();
+          img2.onload = function() {
+            cachedIconUrls[id] = url2;
+            el.src = url2;
+            el.style.display = 'block';
+          };
+          img2.onerror = function() {
+            // Tentativa 3: placeholder gerado com inicial do app
+            var name = el.closest('[data-card-id]') ? (el.closest('[data-card-id]').querySelector('[data-name]') || {}).textContent || '?' : '?';
+            var initial = name.charAt(0).toUpperCase();
+            var canvas = document.createElement('canvas');
+            canvas.width = 44; canvas.height = 44;
+            var ctx2 = canvas.getContext('2d');
+            ctx2.fillStyle = 'rgba(88,101,242,0.3)';
+            ctx2.beginPath(); ctx2.roundRect(0,0,44,44,10); ctx2.fill();
+            ctx2.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx2.font = 'bold 20px Inter, sans-serif';
+            ctx2.textAlign = 'center'; ctx2.textBaseline = 'middle';
+            ctx2.fillText(initial, 22, 22);
+            el.src = canvas.toDataURL();
+            el.style.display = 'block';
+          };
+          img2.src = url2;
+        }
+
+        if (cachedIconUrls[appId]) {
+          fetchImg.src = cachedIconUrls[appId];
+          fetchImg.style.display = 'block';
+        } else {
+          tryFetchIcon(appId, fetchImg);
+        }
       }
 
       return div;
