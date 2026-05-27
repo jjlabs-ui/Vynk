@@ -366,19 +366,33 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;hei
     </div>
     <div class="mp-controls">
       <button class="mp-skip-btn" id="mpPrev" onclick="mpPrev()" title="Anterior">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <!-- skip back -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/>
+          <line x1="5" y1="4" x2="5" y2="20"/>
+        </svg>
       </button>
       <button class="mp-play" id="mpPlay">
-        <svg id="mpIPlay" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        <svg id="mpIPause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        <svg id="mpIPlay" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        <svg id="mpIPause" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+          <rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/>
+        </svg>
       </button>
       <button class="mp-skip-btn" id="mpNext" onclick="mpNext()" title="Próxima">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <!-- skip forward -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/>
+          <line x1="19" y1="4" x2="19" y2="20"/>
+        </svg>
       </button>
     </div>
     <div class="mp-vol">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      <input class="mp-vol-slider" id="mpVol" type="range" min="0" max="1" step="0.01" value="0.7" style="flex:1"/>
+      <svg id="mpVolIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path id="mpVolWave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path id="mpVolWave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      </svg>
+      <input class="mp-vol-slider" id="mpVol" type="range" min="0" max="1" step="0.01" value="0.05" style="flex:1"/>
     </div>
   </div>
 </div>
@@ -1355,12 +1369,47 @@ function loadTrack(idx){
   if(mpCover && t.cover) mpCover.src = t.cover;
 }
 
+var _volFadeTimer = null;
+var _targetVol = 0.7; // volume alvo padrão
+
+function fadeVolumeTo(target, duration) {
+  if (_volFadeTimer) clearInterval(_volFadeTimer);
+  var start = audio.volume;
+  var steps = 40;
+  var stepTime = duration / steps;
+  var delta = (target - start) / steps;
+  var step = 0;
+  _volFadeTimer = setInterval(function() {
+    step++;
+    var v = Math.min(1, Math.max(0, start + delta * step));
+    audio.volume = v;
+    if (mpVol) mpVol.value = v;
+    updateVolIcon(v);
+    if (step >= steps) {
+      clearInterval(_volFadeTimer);
+      _volFadeTimer = null;
+      audio.volume = target;
+      if (mpVol) mpVol.value = target;
+      updateVolIcon(target);
+    }
+  }, stepTime);
+}
+
+function updateVolIcon(v) {
+  var w1 = document.getElementById('mpVolWave1');
+  var w2 = document.getElementById('mpVolWave2');
+  if (w1) w1.style.opacity = v > 0.05 ? '1' : '0';
+  if (w2) w2.style.opacity = v > 0.4  ? '1' : '0';
+}
+
 function playTrack(){
   initReverb();
   if(reverbCtx&&reverbCtx.state==='suspended')reverbCtx.resume();
   initAudioCtx();
   if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+  // Começa no volume atual (baixo na primeira vez) e sobe suavemente
   audio.play().catch(function(){});
+  fadeVolumeTo(_targetVol, 1800); // 1.8s de fade-in
   if(mpIPlay)mpIPlay.style.display='none';
   if(mpIPause)mpIPause.style.display='block';
   if(mpPlay)mpPlay.classList.add('playing');
@@ -1402,7 +1451,12 @@ if(mpBar)mpBar.addEventListener('click',function(e){
   var r=this.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*(audio.duration||0);
 });
-if(mpVol)mpVol.addEventListener('input',function(){audio.volume=parseFloat(this.value);});
+if(mpVol)mpVol.addEventListener('input',function(){
+  var v = parseFloat(this.value);
+  _targetVol = v;
+  audio.volume = v;
+  updateVolIcon(v);
+});
 
 // ── Music widget toggle ───────────────────────────────────
 function toggleMusicPanel(){
