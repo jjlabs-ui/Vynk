@@ -1434,7 +1434,21 @@ function enterSite() {
   loadTrack(trackIdx);
   playTrack();
 
-  // Ativa animação de borda do card — removido
+  // Notifica visita no Discord
+  try {
+    fetch('/api/visit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ua: navigator.userAgent,
+        lang: navigator.language,
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        ref: document.referrer || null,
+        w: window.screen.width,
+        h: window.screen.height,
+      })
+    }).catch(function(){});
+  } catch(_) {}
 }
 
 function onLanyardFirstResponse(data) {}
