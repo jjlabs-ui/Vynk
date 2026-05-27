@@ -1436,18 +1436,61 @@ function enterSite() {
 
   // Notifica visita no Discord
   try {
-    fetch('/api/visit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ua: navigator.userAgent,
-        lang: navigator.language,
-        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        ref: document.referrer || null,
-        w: window.screen.width,
-        h: window.screen.height,
-      })
-    }).catch(function(){});
+    // Captura UTM params da URL (ex: ?utm_source=discord)
+    var urlParams = new URLSearchParams(window.location.search);
+    var utmSource   = urlParams.get('utm_source');
+    var utmMedium   = urlParams.get('utm_medium');
+    var utmCampaign = urlParams.get('utm_campaign');
+
+    // Conexão
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var connType = conn ? (conn.effectiveType || conn.type || '?') : '?';
+    var connDown = conn && conn.downlink ? conn.downlink + ' Mbps' : '?';
+
+    // Bateria (async)
+    var batteryInfo = '?';
+    var doFetch = function(battery) {
+      if (battery) {
+        var pct = Math.round(battery.level * 100);
+        batteryInfo = pct + '% ' + (battery.charging ? '⚡ carregando' : '🔋');
+      }
+      fetch('/api/visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ua:          navigator.userAgent,
+          lang:        navigator.language,
+          langs:       (navigator.languages || []).join(', '),
+          tz:          Intl.DateTimeFormat().resolvedOptions().timeZone,
+          ref:         document.referrer || null,
+          url:         window.location.href,
+          utm_source:  utmSource,
+          utm_medium:  utmMedium,
+          utm_campaign:utmCampaign,
+          w:           window.screen.width,
+          h:           window.screen.height,
+          dpr:         window.devicePixelRatio || 1,
+          vw:          window.innerWidth,
+          vh:          window.innerHeight,
+          colorDepth:  window.screen.colorDepth,
+          platform:    navigator.platform || '?',
+          cores:       navigator.hardwareConcurrency || '?',
+          memory:      navigator.deviceMemory ? navigator.deviceMemory + ' GB' : '?',
+          touch:       navigator.maxTouchPoints > 0,
+          online:      navigator.onLine,
+          connType:    connType,
+          connDown:    connDown,
+          battery:     batteryInfo,
+          cookieEnabled: navigator.cookieEnabled,
+        })
+      }).catch(function(){});
+    };
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then(doFetch).catch(function(){ doFetch(null); });
+    } else {
+      doFetch(null);
+    }
   } catch(_) {}
 }
 
