@@ -1,6 +1,5 @@
-# Biolink — Personal Site
+# Weblinks — Personal Site
 
-🔗 [jjxvnz.bio](https://jjxvnz.bio)
 
 Site pessoal com integração Discord em tempo real, player de música com efeitos de áudio e design premium.
 
