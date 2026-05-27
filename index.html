@@ -66,15 +66,9 @@ body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;
 @keyframes itemIn{from{opacity:0;transform:translateZ(18px) translateY(14px)}to{opacity:1;transform:translateZ(18px) translateY(0)}}
 
 .views-badge{position:absolute;top:14px;right:16px;display:flex;align-items:center;gap:5px;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:500;white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;transition:background .8s,color .8s,border-color .8s;letter-spacing:.2px;}
-.views-badge svg{animation:eyeBlink 3.5s ease-in-out infinite;transform-origin:center;display:block;}
-.views-badge.pulse svg{filter:drop-shadow(0 0 6px rgba(255,255,255,.6));}
-@keyframes eyeBlink{
-  0%,38%,100%{transform:scaleY(1);opacity:1;}
-  42%{transform:scaleY(0.05);opacity:0.4;}
-  46%{transform:scaleY(1);opacity:1;}
-  50%{transform:scaleY(0.05);opacity:0.4;}
-  54%{transform:scaleY(1);opacity:1;}
-}
+.views-badge svg{transition:transform .3s ease,filter .3s ease;}
+.views-badge.pulse svg{animation:eyePulse .6s ease;filter:drop-shadow(0 0 6px rgba(255,255,255,.6));}
+@keyframes eyePulse{0%{transform:scale(1);}30%{transform:scale(1.5);}60%{transform:scale(0.9);}100%{transform:scale(1);}}
 
 .avatar-ring{width:90px;height:90px;border-radius:50%;padding:0;margin-top:0px;transition:background 1s;background:none}
 .avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;transition:filter .5s}
@@ -253,41 +247,41 @@ body::after{display:none;}
   50%{transform:scale(1.1) rotate(5deg) translateY(-2px)}
 }
 #musicPanel{
-  position:absolute;top:50px;right:0;
-  width:300px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;
-  padding:14px;
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
+  position:absolute;top:54px;right:0;
+  width:340px;
+  background:rgba(12,12,12,0.92);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:16px;
+  backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px);
   display:none;
-  flex-direction:column;gap:12px;
-  box-shadow:0 8px 40px rgba(0,0,0,.4);
+  flex-direction:column;gap:14px;
+  box-shadow:0 12px 50px rgba(0,0,0,.6);
   animation:panelIn .2s ease;
 }
 #musicPanel.open{display:flex}
 @keyframes panelIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.mp-top{display:flex;align-items:center;gap:10px;}
-.mp-cover{width:46px;height:46px;border-radius:10px;object-fit:cover;flex-shrink:0;filter:grayscale(15%);}
+.mp-top{display:flex;align-items:center;gap:14px;}
+.mp-cover{width:58px;height:58px;border-radius:12px;object-fit:cover;flex-shrink:0;filter:grayscale(10%);box-shadow:0 4px 16px rgba(0,0,0,.5);}
 .mp-meta{flex:1;min-width:0;}
-.mp-title{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mp-artist{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mp-bar-row{display:flex;align-items:center;gap:7px;}
-.mp-time{font-size:9.5px;color:rgba(255,255,255,.3);font-variant-numeric:tabular-nums;min-width:28px;}
-.mp-bar{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:99px;position:relative;cursor:none;}
+.mp-title{font-size:13.5px;font-weight:700;color:rgba(255,255,255,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px;}
+.mp-artist{font-size:11px;color:rgba(255,255,255,.38);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mp-bar-row{display:flex;align-items:center;gap:8px;}
+.mp-time{font-size:10px;color:rgba(255,255,255,.28);font-variant-numeric:tabular-nums;min-width:32px;}
+.mp-bar{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:99px;position:relative;cursor:none;}
 .mp-bar:hover .mp-thumb{opacity:1}
-.mp-fill{height:100%;background:rgba(255,255,255,.65);border-radius:99px;width:0%;}
-.mp-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;background:#fff;border-radius:50%;opacity:0;transition:opacity .15s;pointer-events:none;}
-.mp-controls{display:flex;align-items:center;gap:6px;}
-.mp-play{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);cursor:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.9);transition:background .2s;flex-shrink:0;}
-.mp-play:hover{background:rgba(255,255,255,.22)}
-.mp-skip-btn{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);cursor:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.65);transition:background .2s,color .2s;flex-shrink:0;}
-.mp-skip-btn:hover{background:rgba(255,255,255,.15);color:#fff;}
-.mp-vol{display:flex;align-items:center;gap:5px;flex:1;}
-.mp-vol svg{flex-shrink:0;color:rgba(255,255,255,.35);}
-input.mp-vol-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(255,255,255,.15);border-radius:99px;outline:none;cursor:none;}
-input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#fff;cursor:none;box-shadow:0 0 4px rgba(255,255,255,.3);}
+.mp-fill{height:100%;background:rgba(255,255,255,.7);border-radius:99px;width:0%;transition:width .1s linear;}
+.mp-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;background:#fff;border-radius:50%;opacity:0;transition:opacity .15s;pointer-events:none;box-shadow:0 0 6px rgba(255,255,255,.4);}
+.mp-controls{display:flex;align-items:center;justify-content:center;gap:10px;}
+.mp-play{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);cursor:none;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .2s,transform .15s;flex-shrink:0;}
+.mp-play:hover{background:rgba(255,255,255,.28);transform:scale(1.08)}
+.mp-skip-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);transition:background .2s,color .2s,transform .15s;flex-shrink:0;}
+.mp-skip-btn:hover{background:rgba(255,255,255,.14);color:#fff;transform:scale(1.08)}
+.mp-vol{display:flex;align-items:center;gap:6px;padding:0 2px;}
+.mp-vol svg{flex-shrink:0;color:rgba(255,255,255,.3);}
+input.mp-vol-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(255,255,255,.12);border-radius:99px;outline:none;cursor:none;}
+input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:none;box-shadow:0 0 5px rgba(255,255,255,.35);}
 
 /* ── Server Tag Tooltip ── */
 .server-tag-wrap{position:relative;z-index:100;}
@@ -372,19 +366,19 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;hei
     </div>
     <div class="mp-controls">
       <button class="mp-skip-btn" id="mpPrev" onclick="mpPrev()" title="Anterior">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
       <button class="mp-play" id="mpPlay">
-        <svg id="mpIPlay" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        <svg id="mpIPause" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        <svg id="mpIPlay" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg id="mpIPause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
       <button class="mp-skip-btn" id="mpNext" onclick="mpNext()" title="Próxima">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
-      <div class="mp-vol">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        <input class="mp-vol-slider" id="mpVol" type="range" min="0" max="1" step="0.01" value="0.7"/>
-      </div>
+    </div>
+    <div class="mp-vol">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <input class="mp-vol-slider" id="mpVol" type="range" min="0" max="1" step="0.01" value="0.7" style="flex:1"/>
     </div>
   </div>
 </div>
@@ -1234,16 +1228,21 @@ function initReverb(){
     convolver=reverbCtx.createConvolver();
     reverbGain=reverbCtx.createGain();
     dryGain=reverbCtx.createGain();
-    reverbGain.gain.value=0.3;
-    dryGain.gain.value=0.85;
-    // Gera impulse response sintético (reverb)
+    // Ambiente grande e vazio: reverb longo (3.5s), wet alto
+    reverbGain.gain.value=0.55;
+    dryGain.gain.value=0.75;
+    // Gera impulse response sintético — sala grande
     var rate=reverbCtx.sampleRate;
-    var len=rate*2;
+    var len=Math.floor(rate*3.5); // 3.5 segundos de cauda
     var impulse=reverbCtx.createBuffer(2,len,rate);
     for(var ch=0;ch<2;ch++){
       var data=impulse.getChannelData(ch);
       for(var i=0;i<len;i++){
-        data[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5);
+        // Decaimento exponencial lento + ruído branco = reverb de sala grande
+        var decay=Math.pow(1-i/len,1.8);
+        // Adiciona reflexões iniciais (early reflections)
+        var earlyRef=(i<rate*0.08)?Math.sin(i*0.3)*0.4:0;
+        data[i]=(Math.random()*2-1)*decay*0.9+earlyRef;
       }
     }
     convolver.buffer=impulse;
@@ -1306,33 +1305,35 @@ var mbBars=[
   document.getElementById('mbBar3'),
   document.getElementById('mbBar4')
 ];
-// frequência bands para cada barrinha (índices no array de 128 bins)
-var bands=[2,6,14,28];
+// Bandas de frequência: sub-bass, bass, mid, high-mid
+var bands=[3,8,18,36];
 
 function initAudioCtx(){
   if(audioCtx)return;
-  // Usa o mesmo contexto do reverb se já existe
-  if(reverbCtx){
-    audioCtx=reverbCtx;
-    analyser=audioCtx.createAnalyser();
-    analyser.fftSize=256;
-    analyser.smoothingTimeConstant=0.75;
-    dataArr=new Uint8Array(analyser.frequencyBinCount);
-    // Conecta o analyser na saída do dry
-    if(dryGain){dryGain.connect(analyser);}
-    else if(reverbSource){reverbSource.connect(analyser);}
-  } else {
-    try{
+  try{
+    // Reutiliza o contexto do reverb se já existe
+    if(reverbCtx){
+      audioCtx=reverbCtx;
+      analyser=audioCtx.createAnalyser();
+      analyser.fftSize=512;
+      analyser.smoothingTimeConstant=0.8;
+      dataArr=new Uint8Array(analyser.frequencyBinCount);
+      // Conecta analyser depois do dry para pegar o sinal processado
+      if(dryGain){
+        dryGain.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      }
+    } else {
       audioCtx=new(window.AudioContext||window.webkitAudioContext)();
       analyser=audioCtx.createAnalyser();
-      analyser.fftSize=256;
-      analyser.smoothingTimeConstant=0.75;
+      analyser.fftSize=512;
+      analyser.smoothingTimeConstant=0.8;
       dataArr=new Uint8Array(analyser.frequencyBinCount);
       source=audioCtx.createMediaElementSource(audio);
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
-    }catch(e){}
-  }
+    }
+  }catch(e){}
 }
 
 function eqLoop(){
@@ -1342,20 +1343,17 @@ function eqLoop(){
   mbBars.forEach(function(bar,i){
     if(!bar)return;
     var val=dataArr[bands[i]]||0;
-    // mapeia 0-255 → 3px-22px
-    var h=3+Math.round((val/255)*19);
+    // mapeia 0-255 → 3px-24px com boost de sensibilidade
+    var normalized=Math.min(1,val/180);
+    var h=3+Math.round(normalized*21);
     bar.style.height=h+'px';
   });
 }
 
-function startEqLoop(){
-  if(rafId)return;
-  eqLoop();
-}
+function startEqLoop(){if(rafId)return;eqLoop();}
 function stopEqLoop(){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
-  // reset barrinhas para alturas estáticas
-  var defaults=[5,9,6,11];
+  var defaults=[4,8,5,10];
   mbBars.forEach(function(bar,i){if(bar)bar.style.height=defaults[i]+'px';});
 }
 
