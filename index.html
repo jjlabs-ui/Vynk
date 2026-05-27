@@ -991,6 +991,10 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
     <div class="profile-card-left">
       <div class="profile-avatar-wrap">
         <img class="profile-avatar" id="discordAvatar" src="" alt="profile"/>
+        <img id="discordAvatarDecoration" src="" alt="" style="
+          position:absolute;inset:-18%;width:136%;height:136%;
+          pointer-events:none;display:none;z-index:2;
+        "/>
         <span class="online-dot" id="onlineDot">
           <svg width="14" height="14" viewBox="0 0 16 16" id="statusSvg">
             <defs>
@@ -1646,23 +1650,27 @@ card.addEventListener('mouseleave',function(){
 
     // Avatar decoration (anel/moldura do Discord Nitro)
     var decorEl = document.getElementById('avatarDecoration');
-    if (decorEl && data.discord_user) {
-      var decor = data.discord_user.avatar_decoration_data;
-      if (decor && decor.asset) {
-        // Tenta GIF animado primeiro, fallback para PNG
-        var decorUrl = 'https://cdn.discordapp.com/avatar-decoration-presets/' + decor.asset + '.png?size=256&passthrough=true';
-        decorEl.src = decorUrl;
-        decorEl.style.display = 'block';
-        decorEl.onerror = function() {
-          // Fallback PNG sem passthrough
-          this.src = 'https://cdn.discordapp.com/avatar-decoration-presets/' + decor.asset + '.png?size=256';
+    var decorEl2 = document.getElementById('discordAvatarDecoration');
+    var decor = data.discord_user && data.discord_user.avatar_decoration_data;
+
+    function applyDecoration(el, asset) {
+      if (!el) return;
+      if (asset) {
+        var url = 'https://cdn.discordapp.com/avatar-decoration-presets/' + asset + '.png?size=256&passthrough=true';
+        el.src = url;
+        el.style.display = 'block';
+        el.onerror = function() {
+          this.src = 'https://cdn.discordapp.com/avatar-decoration-presets/' + asset + '.png?size=256';
           this.onerror = function() { this.style.display = 'none'; };
         };
       } else {
-        decorEl.style.display = 'none';
-        decorEl.src = '';
+        el.style.display = 'none';
+        el.src = '';
       }
     }
+
+    applyDecoration(decorEl,  decor ? decor.asset : null);
+    applyDecoration(decorEl2, decor ? decor.asset : null);
 
     // Username
     var nameEl = document.getElementById('discordName');
