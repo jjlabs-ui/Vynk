@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Github, Twitter, Instagram, Youtube, Twitch, Globe,
   MapPin, Eye, Play, Pause, SkipBack, SkipForward, Volume2,
@@ -282,10 +283,24 @@ export default function App() {
     <>
       <style>{CSS}</style>
 
-      <div className="views-corner">
-        <Eye size={13} className="eye-icon" />
-        <span>{views > 0 ? views.toLocaleString() : '–'}</span>
-      </div>
+      {createPortal(
+        <div style={{
+          position:'fixed', top:'16px', right:'16px', zIndex:99999,
+          display:'flex', alignItems:'center', gap:'6px',
+          padding:'7px 14px', fontSize:'13px', fontWeight:500,
+          color:'rgba(255,255,255,0.65)', letterSpacing:'0.3px',
+          background:'rgba(8,8,8,0.85)',
+          border:'1px solid rgba(255,255,255,0.2)',
+          borderRadius:'10px',
+          backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)',
+          boxShadow:'0 2px 16px rgba(0,0,0,0.5)',
+          fontFamily:"'Inter', sans-serif",
+        }}>
+          <Eye size={13} style={{ animation:'eyePulse 2.8s ease-in-out infinite', flexShrink:0 }} />
+          <span>{views > 0 ? views.toLocaleString('pt-BR') : '–'}</span>
+        </div>,
+        document.body
+      )}
 
       <div className="wrap">
 

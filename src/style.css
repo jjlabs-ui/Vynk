@@ -51,6 +51,15 @@ body::after {
   to   { transform: translate(40px, 30px) scale(1.1); }
 }
 
+@keyframes eyePulse {
+  0%,100% { transform: scaleY(1); opacity: 0.65; }
+  45%     { transform: scaleY(1); opacity: 0.65; }
+  50%     { transform: scaleY(0.08); opacity: 0.25; }
+  55%     { transform: scaleY(1); opacity: 0.65; }
+  62%     { transform: scaleY(0.85); opacity: 0.45; }
+  68%     { transform: scaleY(1); opacity: 0.65; }
+}
+
 #root {
   position: relative;
   z-index: 1;
