@@ -413,6 +413,11 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
   <div style="position:relative;display:inline-block;margin-top:24px;">
     <div class="avatar-ring" id="avatarRing">
       <img class="avatar" id="mainAvatar" src="" alt="avatar"/>
+      <img id="avatarDecoration" src="" alt="" style="
+        position:absolute;inset:-16%;width:132%;height:132%;
+        pointer-events:none;display:none;z-index:2;
+        image-rendering:auto;
+      "/>
     </div>
   </div>
 
@@ -1637,6 +1642,26 @@ card.addEventListener('mouseleave',function(){
       // Update favicon to match Discord avatar
       var favicon = document.querySelector('link[rel="icon"]');
       if (favicon) favicon.href = avatarUrl;
+    }
+
+    // Avatar decoration (anel/moldura do Discord Nitro)
+    var decorEl = document.getElementById('avatarDecoration');
+    if (decorEl && data.discord_user) {
+      var decor = data.discord_user.avatar_decoration_data;
+      if (decor && decor.asset) {
+        // Tenta GIF animado primeiro, fallback para PNG
+        var decorUrl = 'https://cdn.discordapp.com/avatar-decoration-presets/' + decor.asset + '.png?size=256&passthrough=true';
+        decorEl.src = decorUrl;
+        decorEl.style.display = 'block';
+        decorEl.onerror = function() {
+          // Fallback PNG sem passthrough
+          this.src = 'https://cdn.discordapp.com/avatar-decoration-presets/' + decor.asset + '.png?size=256';
+          this.onerror = function() { this.style.display = 'none'; };
+        };
+      } else {
+        decorEl.style.display = 'none';
+        decorEl.src = '';
+      }
     }
 
     // Username
