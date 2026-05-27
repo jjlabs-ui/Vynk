@@ -281,12 +281,13 @@ export default function App() {
   return (
     <>
       <style>{CSS}</style>
-      <div className="wrap">
 
-        <div className="views-corner">
-          <Eye size={13} className="eye-icon" />
-          <span>{views > 0 ? views.toLocaleString() : '–'}</span>
-        </div>
+      <div className="views-corner">
+        <Eye size={13} className="eye-icon" />
+        <span>{views > 0 ? views.toLocaleString() : '–'}</span>
+      </div>
+
+      <div className="wrap">
 
         <div className="av-ring">
           <img src={CONFIG.avatar} alt="av" className="av" />
@@ -361,12 +362,13 @@ const CSS = `
   .views-corner {
     position:fixed; top:16px; right:16px; z-index:9999;
     display:flex; align-items:center; gap:6px;
-    padding:6px 12px; font-size:12px; font-weight:500;
-    color:rgba(255,255,255,0.55); letter-spacing:0.4px;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:6px;
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    padding:7px 14px; font-size:13px; font-weight:500;
+    color:rgba(255,255,255,0.6); letter-spacing:0.3px;
+    background:rgba(10,10,10,0.75);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:10px;
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 2px 12px rgba(0,0,0,0.4);
   }
   .eye-icon {
     animation: eyePulse 2.8s ease-in-out infinite;
