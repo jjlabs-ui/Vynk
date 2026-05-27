@@ -405,24 +405,10 @@ input.mp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;hei
   </div>
 
   <div class="badges-row">
-    <!-- Coroa -->
-    <div class="badge-svg" title="Realeza">
+    <!-- Diamante -->
+    <div class="badge-svg" title="Raro">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 20h20"/>
-        <path d="M4 20V10l4 4 4-8 4 8 4-4v10"/>
-      </svg>
-    </div>
-    <!-- Raio -->
-    <div class="badge-svg" title="Poder">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-      </svg>
-    </div>
-    <!-- Olho -->
-    <div class="badge-svg" title="Visão">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
+        <path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>
       </svg>
     </div>
   </div>
@@ -1502,6 +1488,15 @@ card.addEventListener('mouseleave',function(){
     var nameEl = document.getElementById('discordName');
     if (nameEl && data.discord_user) {
       nameEl.textContent = data.discord_user.display_name || data.discord_user.global_name || data.discord_user.username;
+    }
+    // Atualiza o nome principal no topo junto com o Discord
+    var mainNameEl = document.getElementById('mainName');
+    if (mainNameEl && data.discord_user) {
+      var dn = data.discord_user.display_name || data.discord_user.global_name || data.discord_user.username || 'jjxvnz';
+      // Preserva o cursor piscando
+      var cursor = document.getElementById('nameCursor');
+      mainNameEl.childNodes[0].textContent = dn;
+      mainNameEl.setAttribute('data-text', dn);
     }
 
     // Tag (clan/guild tag) — dinâmica via API
