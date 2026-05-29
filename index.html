@@ -1079,6 +1079,21 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
 </div></div></div>
 
 <script>
+// ── Mobile detection ─────────────────────────────────────
+var IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 700;
+
+// ── Em mobile: remove video de fundo (economia de banda + bateria) ──
+if (IS_MOBILE) {
+  var bgv = document.getElementById('bgVideo');
+  if (bgv) {
+    bgv.pause();
+    bgv.removeAttribute('autoplay');
+    bgv.src = '';
+    bgv.load();
+    bgv.style.display = 'none';
+  }
+}
+
 // ── Themes ────────────────────────────────────────────────
 var T = {
   black: {
@@ -1180,58 +1195,64 @@ var mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
 var curX=mouseX, curY=mouseY;
 var lastSparkX=mouseX, lastSparkY=mouseY;
 
-document.addEventListener('mousemove',function(e){
-  mouseX=e.clientX; mouseY=e.clientY;
-  var dx=mouseX-lastSparkX, dy=mouseY-lastSparkY;
-  if(Math.sqrt(dx*dx+dy*dy) > 18) {
-    lastSparkX=mouseX; lastSparkY=mouseY;
-    var s=document.createElement('div');
-    var size=Math.random()*4+3;
-    var angle=Math.random()*360;
-    var dist=Math.random()*6+3;
-    var tx=Math.cos(angle*Math.PI/180)*dist;
-    var ty=Math.sin(angle*Math.PI/180)*dist;
-    var dur=(Math.random()*.35+.3).toFixed(2);
-    s.style.cssText='position:fixed;pointer-events:none;z-index:9994;'+
-      'left:'+mouseX+'px;top:'+mouseY+'px;'+
-      'width:'+size+'px;height:'+size+'px;'+
-      'transform:translate(-50%,-50%) rotate(45deg);'+
-      'background:rgba(255,255,255,'+(Math.random()*.3+.15)+');'+
-      'box-shadow:0 0 4px rgba(255,255,255,.3);'+
-      'animation:sparkFade '+dur+'s ease-out forwards';
-    s.style.setProperty('--tx', tx+'px');
-    s.style.setProperty('--ty', ty+'px');
-    document.body.appendChild(s);
-    setTimeout(function(el){el.remove()},600,s);
-  }
-});
+if (!IS_MOBILE) {
+  document.addEventListener('mousemove',function(e){
+    mouseX=e.clientX; mouseY=e.clientY;
+    var dx=mouseX-lastSparkX, dy=mouseY-lastSparkY;
+    if(Math.sqrt(dx*dx+dy*dy) > 18) {
+      lastSparkX=mouseX; lastSparkY=mouseY;
+      var s=document.createElement('div');
+      var size=Math.random()*4+3;
+      var angle=Math.random()*360;
+      var dist=Math.random()*6+3;
+      var tx=Math.cos(angle*Math.PI/180)*dist;
+      var ty=Math.sin(angle*Math.PI/180)*dist;
+      var dur=(Math.random()*.35+.3).toFixed(2);
+      s.style.cssText='position:fixed;pointer-events:none;z-index:9994;'+
+        'left:'+mouseX+'px;top:'+mouseY+'px;'+
+        'width:'+size+'px;height:'+size+'px;'+
+        'transform:translate(-50%,-50%) rotate(45deg);'+
+        'background:rgba(255,255,255,'+(Math.random()*.3+.15)+');'+
+        'box-shadow:0 0 4px rgba(255,255,255,.3);'+
+        'animation:sparkFade '+dur+'s ease-out forwards';
+      s.style.setProperty('--tx', tx+'px');
+      s.style.setProperty('--ty', ty+'px');
+      document.body.appendChild(s);
+      setTimeout(function(el){el.remove()},600,s);
+    }
+  });
 
-document.addEventListener('mousedown',function(){
-  cur.classList.add('clicking');
-  for(var i=0;i<6;i++){
-    var s=document.createElement('div');
-    var angle=i*60+Math.random()*20;
-    var dist=14+Math.random()*10;
-    s.style.cssText='position:fixed;pointer-events:none;z-index:9994;'+
-      'left:'+mouseX+'px;top:'+mouseY+'px;'+
-      'width:4px;height:4px;'+
-      'transform:translate(-50%,-50%) rotate(45deg);'+
-      'background:rgba(255,255,255,.8);'+
-      'box-shadow:0 0 6px rgba(255,255,255,.5);'+
-      'animation:burstFade .4s ease-out forwards';
-    s.style.setProperty('--tx', (Math.cos(angle*Math.PI/180)*dist)+'px');
-    s.style.setProperty('--ty', (Math.sin(angle*Math.PI/180)*dist)+'px');
-    document.body.appendChild(s);
-    setTimeout(function(el){el.remove()},500,s);
-  }
-});
-document.addEventListener('mouseup',function(){ cur.classList.remove('clicking'); });
+  document.addEventListener('mousedown',function(){
+    cur.classList.add('clicking');
+    for(var i=0;i<6;i++){
+      var s=document.createElement('div');
+      var angle=i*60+Math.random()*20;
+      var dist=14+Math.random()*10;
+      s.style.cssText='position:fixed;pointer-events:none;z-index:9994;'+
+        'left:'+mouseX+'px;top:'+mouseY+'px;'+
+        'width:4px;height:4px;'+
+        'transform:translate(-50%,-50%) rotate(45deg);'+
+        'background:rgba(255,255,255,.8);'+
+        'box-shadow:0 0 6px rgba(255,255,255,.5);'+
+        'animation:burstFade .4s ease-out forwards';
+      s.style.setProperty('--tx', (Math.cos(angle*Math.PI/180)*dist)+'px');
+      s.style.setProperty('--ty', (Math.sin(angle*Math.PI/180)*dist)+'px');
+      document.body.appendChild(s);
+      setTimeout(function(el){el.remove()},500,s);
+    }
+  });
+  document.addEventListener('mouseup',function(){ cur.classList.remove('clicking'); });
 
-(function animCursor(){
-  curX+=(mouseX-curX)*.5; curY+=(mouseY-curY)*.5;
-  cur.style.left=curX+'px'; cur.style.top=curY+'px';
-  requestAnimationFrame(animCursor);
-})();
+  (function animCursor(){
+    curX+=(mouseX-curX)*.5; curY+=(mouseY-curY)*.5;
+    cur.style.left=curX+'px'; cur.style.top=curY+'px';
+    requestAnimationFrame(animCursor);
+  })();
+} else {
+  // Em mobile, esconde o cursor customizado
+  if (cur) cur.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
 
 // ── Particles ─────────────────────────────────────────────
 var canvas=document.getElementById('particleCanvas'),ctx=canvas.getContext('2d');
@@ -1239,7 +1260,8 @@ window._pR=255;window._pG=255;window._pB=255;window._rippleColor='rgba(255,255,2
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
 var pts=[];
-for(var i=0;i<55;i++) pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,o:Math.random()*.25+.08});
+var PT_COUNT = IS_MOBILE ? 18 : 55;
+for(var i=0;i<PT_COUNT;i++) pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,o:Math.random()*.25+.08});
 function animPts(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   pts.forEach(function(p){
@@ -1255,17 +1277,20 @@ function animPts(){
 animPts();
 
 // ── Name particles ────────────────────────────────────────
-var nameEl=document.querySelector('.name');
-setInterval(function(){
-  if(!nameEl)return;
-  var rect=nameEl.getBoundingClientRect();
-  for(var i=0;i<2;i++){
-    var p=document.createElement('div');p.className='name-particle';
-    var tx=(Math.random()-.5)*60,ty=-(Math.random()*30+10),dur=(Math.random()*.8+.8).toFixed(2)+'s';
-    p.style.cssText='left:'+(rect.left+Math.random()*rect.width)+'px;top:'+(rect.top+window.scrollY+Math.random()*rect.height)+'px;--tx:'+tx+'px;--ty:'+ty+'px;--dur:'+dur+';background:rgba('+window._pR+','+window._pG+','+window._pB+',.7)';
-    document.body.appendChild(p);setTimeout(function(el){el.remove()},1600,p);
-  }
-},350);
+// Desliga em mobile para economizar bateria/CPU
+if (!IS_MOBILE) {
+  var nameEl=document.querySelector('.name');
+  setInterval(function(){
+    if(!nameEl)return;
+    var rect=nameEl.getBoundingClientRect();
+    for(var i=0;i<2;i++){
+      var p=document.createElement('div');p.className='name-particle';
+      var tx=(Math.random()-.5)*60,ty=-(Math.random()*30+10),dur=(Math.random()*.8+.8).toFixed(2)+'s';
+      p.style.cssText='left:'+(rect.left+Math.random()*rect.width)+'px;top:'+(rect.top+window.scrollY+Math.random()*rect.height)+'px;--tx:'+tx+'px;--ty:'+ty+'px;--dur:'+dur+';background:rgba('+window._pR+','+window._pG+','+window._pB+',.7)';
+      document.body.appendChild(p);setTimeout(function(el){el.remove()},1600,p);
+    }
+  },350);
+}
 
 // ── Ripple ────────────────────────────────────────────────
 document.addEventListener('click',function(e){
@@ -1673,7 +1698,6 @@ card.addEventListener('mouseleave',function(){
   var DISCORD_ID = '300679614680793088';
   var ws = null;
   var heartbeat = null;
-
   function updatePresence(data) {
     if (!data) return;
 
@@ -1837,6 +1861,20 @@ card.addEventListener('mouseleave',function(){
   var lanyardTimeout = setTimeout(function() {
     if (!lanyardConnected) setOfflineState();
   }, 8000);
+
+  // ── REST primeiro (resposta rápida), depois WebSocket (tempo real) ──
+  // Isso reduz drasticamente o tempo de primeira carga em mobile
+  fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID, { cache: 'no-store' })
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      if (json && json.success && json.data) {
+        lanyardConnected = true;
+        window.lanyardConnected = true;
+        clearTimeout(lanyardTimeout);
+        updatePresence(json.data);
+      }
+    })
+    .catch(function(){});
 
   function connectWS() {
     ws = new WebSocket('wss://api.lanyard.rest/socket');
