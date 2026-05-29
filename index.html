@@ -55,6 +55,30 @@ body{font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;
 .splash-hint{font-size:11px;letter-spacing:4px;text-transform:uppercase;animation:splashPulse 2.5s ease-in-out infinite .4s}
 @keyframes splashPulse{0%,100%{opacity:.25}50%{opacity:.85}}
 
+/* Loader spinner */
+.spinner-ring{display:inline-block;position:relative;width:54px;height:54px}
+.spinner-ring div{
+  box-sizing:border-box;display:block;position:absolute;
+  width:44px;height:44px;margin:5px;
+  border:2px solid rgba(255,255,255,.6);
+  border-radius:50%;
+  animation:spinnerRing 1.4s cubic-bezier(0.5,0,0.5,1) infinite;
+  border-color:rgba(255,255,255,.6) transparent transparent transparent;
+}
+.spinner-ring div:nth-child(1){animation-delay:-0.45s}
+.spinner-ring div:nth-child(2){animation-delay:-0.3s}
+.spinner-ring div:nth-child(3){animation-delay:-0.15s}
+@keyframes spinnerRing{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+/* App entry animation */
+#app.entering{
+  animation: appEntry .9s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes appEntry{
+  0%   { opacity:0; transform:scale(.92) translateY(20px); filter:blur(10px); }
+  100% { opacity:1; transform:scale(1)   translateY(0);    filter:blur(0); }
+}
+
 #app{position:relative;z-index:1;width:100%;display:flex;justify-content:center;padding:24px 24px;opacity:0;transition:opacity .7s ease}
 #app.visible{opacity:1}
 
@@ -364,8 +388,15 @@ input.mp-vol-slider::-moz-range-thumb{width:10px;height:10px;border-radius:50%;b
 </video>
 
 
-<div id="splash" onclick="enterSite()" style="cursor:none;background:#000;position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+<div id="splash" onclick="enterSite()" style="cursor:none;background:#000;position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
   <div id="splashHint" style="position:relative;z-index:1;font-size:32px;letter-spacing:10px;color:rgba(255,255,255,.7);font-family:'Cinzel Decorative',cursive;animation:splashPulse 2.5s ease-in-out infinite;user-select:none;pointer-events:none;text-transform:uppercase;">CLICK</div>
+
+  <div id="splashLoader" style="display:none;flex-direction:column;align-items:center;gap:18px;pointer-events:none;">
+    <div class="spinner-ring">
+      <div></div><div></div><div></div><div></div>
+    </div>
+    <div id="splashLoaderText" style="font-family:'Inter',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(255,255,255,.4);text-transform:uppercase;animation:splashPulse 2s ease-in-out infinite;">carregando</div>
+  </div>
 </div>
 
 
@@ -1572,16 +1603,52 @@ applyTheme("black");
 
 var spotifyActive = false;
 var lanyardReady = false;
+var _waitingForApi = false;
+
+function revealApp() {
+  if (app.classList.contains('visible')) return;
+  splash.style.opacity = '0';
+  splash.style.pointerEvents = 'none';
+  setTimeout(function(){ splash.style.display = 'none'; }, 700);
+  app.classList.add('entering');
+  setTimeout(function(){ app.classList.add('visible'); }, 50);
+  loadTrack(trackIdx);
+  playTrack();
+}
 
 function enterSite() {
   if (splash._done) return;
   splash._done = true;
-  splash.style.opacity = '0';
-  splash.style.pointerEvents = 'none';
-  setTimeout(function(){ splash.style.display = 'none'; }, 900);
-  app.classList.add('visible');
-  loadTrack(trackIdx);
-  playTrack();
+
+  // Esconde o "CLICK", mostra o spinner
+  var hint = document.getElementById('splashHint');
+  var loader = document.getElementById('splashLoader');
+  if (hint) hint.style.display = 'none';
+  if (loader) loader.style.display = 'flex';
+
+  _waitingForApi = true;
+
+  // Se a Lanyard já respondeu, revela imediatamente
+  if (window.lanyardConnected) {
+    setTimeout(revealApp, 400);
+  } else {
+    // Espera Lanyard responder
+    var checkInterval = setInterval(function() {
+      if (window.lanyardConnected) {
+        clearInterval(checkInterval);
+        setTimeout(revealApp, 400);
+      }
+    }, 100);
+    // Timeout máximo de 6s — se a API não responder, revela mesmo assim com placeholders
+    setTimeout(function() {
+      if (!app.classList.contains('visible')) {
+        clearInterval(checkInterval);
+        var loaderText = document.getElementById('splashLoaderText');
+        if (loaderText) loaderText.textContent = 'tempo esgotado';
+        setTimeout(revealApp, 800);
+      }
+    }, 6000);
+  }
 
   // Notifica visita no Discord
   try {
@@ -1833,6 +1900,7 @@ card.addEventListener('mouseleave',function(){
   setOfflineState();
 
   var lanyardConnected = false;
+  window.lanyardConnected = false;
   var lanyardTimeout = setTimeout(function() {
     if (!lanyardConnected) setOfflineState();
   }, 8000);
@@ -1850,6 +1918,7 @@ card.addEventListener('mouseleave',function(){
       if (msg.op === 0) {
         if (msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE') {
           lanyardConnected = true;
+          window.lanyardConnected = true;
           clearTimeout(lanyardTimeout);
           updatePresence(msg.d);
         }
@@ -1858,6 +1927,7 @@ card.addEventListener('mouseleave',function(){
     ws.onclose = function() {
       clearInterval(heartbeat);
       lanyardConnected = false;
+      window.lanyardConnected = false;
       // Volta para offline state após 3s sem reconexão
       setTimeout(function() { if (!lanyardConnected) setOfflineState(); }, 3000);
       setTimeout(connectWS, 5000);
